@@ -118,11 +118,11 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Botón generar reporte mensual
+    
  
-// Botón generar reporte mensual
-const btnGenerarReporte = document.getElementById('btnGenerarReporte');
-if (btnGenerarReporte) {
+    // Botón generar reporte mensual
+    const btnGenerarReporte = document.getElementById('btnGenerarReporte');
+    if (btnGenerarReporte) {
     btnGenerarReporte.addEventListener('click', function() {
         this.textContent = '⏳ Generando PDF...';
         this.disabled = true;

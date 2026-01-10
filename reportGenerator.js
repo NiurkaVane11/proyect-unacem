@@ -8,14 +8,13 @@ function generarReportePDF() {
     const doc = new jsPDF();
     
     // Colores corporativos
-    const colorPrimario = [231, 76, 60]; // Rojo UNACEM
-    const colorSecundario = [44, 62, 80]; // Gris oscuro
-    const colorTexto = [127, 140, 141]; // Gris claro
+    const colorPrimario = [231, 76, 60];
+    const colorSecundario = [44, 62, 80];
+    const colorTexto = [127, 140, 141];
     
-    let yPos = 20; // Posición Y actual
+    let yPos = 20;
     
     // ========== ENCABEZADO ==========
-    // Logo/Título
     doc.setFontSize(24);
     doc.setTextColor(...colorPrimario);
     doc.setFont(undefined, 'bold');
@@ -26,7 +25,6 @@ function generarReportePDF() {
     doc.setTextColor(...colorSecundario);
     doc.text('UNACEM', 105, yPos, { align: 'center' });
     
-    // Slogan
     yPos += 10;
     doc.setFontSize(10);
     doc.setTextColor(...colorTexto);
@@ -35,7 +33,6 @@ function generarReportePDF() {
     yPos += 5;
     doc.text('A sophisticated way to predict', 105, yPos, { align: 'center' });
     
-    // Línea separadora
     yPos += 8;
     doc.setDrawColor(...colorPrimario);
     doc.setLineWidth(0.5);
@@ -67,13 +64,12 @@ function generarReportePDF() {
     
     yPos += 10;
     
-    // Cuadro de indicadores
     const indicadores = [
-        ['Índice de Frecuencia (IF)', '0.92', '🔴 Alto'],
-        ['Índice de Severidad (IS)', '16.33', '🟡 Medio'],
-        ['Índice de Accidentabilidad (IA)', '15.02', '🟡 Medio'],
-        ['Proyectos en Riesgo Alto', '3', '⚠️ Crítico'],
-        ['Accidentes Prevenidos', '45', '✅ Excelente']
+        ['Índice de Frecuencia (IF)', '0.92', 'Alto'],
+        ['Índice de Severidad (IS)', '16.33', 'Medio'],
+        ['Índice de Accidentabilidad (IA)', '15.02', 'Medio'],
+        ['Proyectos en Riesgo Alto', '3', 'Crítico'],
+        ['Accidentes Prevenidos', '45', 'Excelente']
     ];
     
     doc.autoTable({
@@ -126,7 +122,7 @@ function generarReportePDF() {
         doc.text(linea, 22, yPos + (idx * 5));
     });
     
-    // COLUMNA 2: LEGALES (al lado)
+    // COLUMNA 2: LEGALES
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...colorSecundario);
@@ -137,7 +133,7 @@ function generarReportePDF() {
     doc.setTextColor(0, 0, 0);
     const textoLegal = [
         '• Cumplimiento normativo: 100%',
-        '• Certificaciones vigentes: ✅',
+        '• Certificaciones vigentes: SI',
         '• Auditorías aprobadas: 4/4',
         '• Sanciones: Ninguna'
     ];
@@ -175,7 +171,7 @@ function generarReportePDF() {
     
     const proyectosRiesgo = appData.proyectos
         .filter(p => p.riesgo === 'alto')
-        .map(p => [p.nombre, p.ubicacion, '🔴 ALTO', '↗️ Aumentando']);
+        .map(p => [p.nombre, p.ubicacion, 'ALTO', 'Aumentando']);
     
     doc.autoTable({
         startY: yPos,
