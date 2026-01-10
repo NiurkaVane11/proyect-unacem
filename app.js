@@ -1,37 +1,55 @@
 /*
-   ARCHIVO: app.js - LIMPIO Y OPTIMIZADO CON RESPONSIVE FIXED
+   ARCHIVO: app.js
+   Lógica principal del Dashboard LifeGuard - UNACEM
 */
 
-// ========== INICIALIZACIÓN PRINCIPAL ==========
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Renderizar datos iniciales
-    Components.renderMetrics(appData.metricas);
-    Components.renderGauge(appData.gauge);
-    Components.renderProjectsTable(appData.proyectos);
-    Components.renderRiskFactors(appData.factoresRiesgo);
-    Components.renderHistoryTable(appData.historico);
-    Components.renderEstadisticas(2025);
+    // ========== 1. INICIALIZACIÓN DE DATOS ==========
+    // Cargar todos los componentes con los datos de data.js
+    try {
+        Components.renderMetrics(appData.metricas);
+        Components.renderGauge(appData.gauge);
+        Components.renderProjectsTable(appData.proyectos);
+        Components.renderRiskFactors(appData.factoresRiesgo);
+        
+        // Si existe historial en data.js, renderizarlo (opcional según tu HTML)
+        if(appData.historico) {
+            // Verifica si existe la función antes de llamarla por si acaso
+            if(Components.renderHistoryTable) Components.renderHistoryTable(appData.historico);
+        }
+
+        // Cargar estadísticas iniciales (Default: 2025)
+        // Asegúrate de que el año exista en data.js
+        const defaultYear = 2025;
+        if(appData.estadisticasHistoricas && appData.estadisticasHistoricas[defaultYear]) {
+            Components.renderEstadisticas(defaultYear);
+        }
+    } catch (error) {
+        console.error("Error inicializando componentes:", error);
+    }
     
-    // ========== ELEMENTOS DOM ==========
+    // ========== 2. REFERENCIAS AL DOM ==========
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');
     const pageTitle = document.getElementById('pageTitle');
     const btnToggle = document.getElementById('btnToggleSidebar');
     const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
     
+    // Mapeo de títulos para el encabezado según la sección
     const titles = {
-        'indicadores': 'Indicadores',
-        'puntos-vida': 'Puntos de Vida',
-        'mapas-calor': 'Mapas de Calor',
-        'proyectos-activos': 'Proyectos Activos',
-        'estadisticas': 'Estadísticas',
-        'factores-riesgo': 'Factores de Riesgo',
+        'indicadores': 'Monitoreo de Seguridad Industrial',
+        'puntos-vida': 'Programa "Puntos de Vida"',
+        'mapas-calor': 'Mapas de Calor - Simulación',
+        'proyectos-activos': 'Estado de Riesgo por Área',
+        'estadisticas': 'Analítica Predictiva & Históricos',
+        'factores-riesgo': 'Factores de Riesgo Críticos',
         'historial': 'Historial de Predicciones'
     };
     
-    // ========== CREAR OVERLAY ==========
+    // ========== 3. LÓGICA DEL SIDEBAR (RESPONSIVE) ==========
+    
+    // Crear overlay si no existe
     let overlay = document.querySelector('.sidebar-overlay');
     if (!overlay) {
         overlay = document.createElement('div');
@@ -39,55 +57,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.appendChild(overlay);
     }
     
-    // ========== FUNCIONES MENÚ ==========
     function closeSidebar() {
-        sidebar.classList.remove('active');
-        overlay.classList.remove('active');
+        if(sidebar) sidebar.classList.remove('active');
+        if(overlay) overlay.classList.remove('active');
         document.body.style.overflow = '';
     }
     
     function openSidebar() {
-        sidebar.classList.add('active');
-        overlay.classList.add('active');
+        if(sidebar) sidebar.classList.add('active');
+        if(overlay) overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
     }
     
-    // ========== NAVEGACIÓN DEL SIDEBAR ==========
-    navItems.forEach(item => {
-        item.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remover clase active de todos los items
-            navItems.forEach(nav => nav.classList.remove('active'));
-            
-            // Agregar clase active al item clickeado
-            this.classList.add('active');
-            
-            // Obtener la sección a mostrar
-            const sectionId = this.getAttribute('data-section');
-            
-            // Ocultar todas las secciones
-            sections.forEach(section => section.classList.remove('active'));
-            
-            // Mostrar la sección seleccionada
-            const activeSection = document.getElementById('section-' + sectionId);
-            if (activeSection) {
-                activeSection.classList.add('active');
-            }
-            
-            // Actualizar el título
-            pageTitle.textContent = titles[sectionId] || 'Dashboard';
-            
-            // CERRAR MENÚ EN MÓVIL
-            if (window.innerWidth <= 1024) {
-                setTimeout(closeSidebar, 200);
-            }
-        });
-    });
-    
-    // ========== MENÚ HAMBURGUESA ==========
-    if (btnToggle && sidebar) {
-        // Toggle sidebar al hacer clic en el botón
+    // Evento Toggle Hamburguesa
+    if (btnToggle) {
         btnToggle.addEventListener('click', function(e) {
             e.preventDefault();
             e.stopPropagation();
@@ -97,21 +80,46 @@ document.addEventListener('DOMContentLoaded', function() {
                 openSidebar();
             }
         });
+    }
 
-        // Cerrar al hacer clic en el overlay
-        overlay.addEventListener('click', function() {
-            closeSidebar();
-        });
+    // Cerrar al hacer clic fuera (Overlay)
+    if (overlay) {
+        overlay.addEventListener('click', closeSidebar);
+    }
 
-        // Cerrar al redimensionar a escritorio
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 1024) {
+    // Navegación
+    navItems.forEach(item => {
+        item.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Activar ítem visualmente
+            navItems.forEach(nav => nav.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Cambiar sección
+            const sectionId = this.getAttribute('data-section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            const activeSection = document.getElementById('section-' + sectionId);
+            if (activeSection) {
+                activeSection.classList.add('active');
+            }
+            
+            // Actualizar Título
+            if (pageTitle) {
+                pageTitle.textContent = titles[sectionId] || 'Dashboard UNACEM';
+            }
+            
+            // Cerrar menú en móvil automáticamente al seleccionar
+            if (window.innerWidth <= 1024) {
                 closeSidebar();
             }
         });
-    }
+    });
     
-    // ========== FILTROS DE PROYECTOS ==========
+    // ========== 4. FILTROS Y EVENTOS ==========
+    
+    // Filtros de Proyectos/Áreas
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(btn => {
         btn.addEventListener('click', function() {
@@ -123,99 +131,77 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // ========== BOTÓN DE ACTUALIZAR ==========
+    // Filtro de Año para Estadísticas
+    const yearFilterStats = document.getElementById('yearFilterStats');
+    if (yearFilterStats) {
+        yearFilterStats.addEventListener('change', function() {
+            const selectedYear = parseInt(this.value);
+            Components.renderEstadisticas(selectedYear);
+        });
+    }
+
+    // Botón de Actualizar (Simulación)
     const btnRefresh = document.querySelector('.btn-refresh');
     if (btnRefresh) {
         btnRefresh.addEventListener('click', function() {
-            this.textContent = '🔄 Actualizando...';
+            const originalText = this.textContent;
+            this.textContent = '🔄 Procesando...';
             this.disabled = true;
             
             setTimeout(() => {
                 updateClock();
+                // Aquí podrías llamar a una función para traer nuevos datos aleatorios si quisieras
+                // Por ahora solo refrescamos la vista
                 Components.renderMetrics(appData.metricas);
                 Components.renderGauge(appData.gauge);
-                Components.renderProjectsTable(appData.proyectos);
                 
-                this.textContent = '🔄 Actualizar';
+                this.textContent = originalText;
                 this.disabled = false;
                 
-                alert('✅ Datos actualizados correctamente');
-            }, 1500);
+                // Feedback visual simple
+                alert('✅ Modelo Random Forest actualizado con éxito.\nNuevos datos ingestados.');
+            }, 1000);
         });
     }
     
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // ========== FILTROS ==========
-    const periodFilter = document.getElementById('periodFilter');
-    if (periodFilter) {
-        periodFilter.addEventListener('change', function() {
-            console.log('Período seleccionado:', this.value);
-            Components.renderHistoryTable(appData.historico);
-        });
-    }
-    
-    const yearFilterStats = document.getElementById('yearFilterStats');
-    if (yearFilterStats) {
-        yearFilterStats.addEventListener('change', function() {
-            Components.renderEstadisticas(parseInt(this.value));
-        });
-    }
-    
-    // ========== BOTÓN GENERAR REPORTE PDF ==========
+    // Botón Generar PDF
     const btnGenerarReporte = document.getElementById('btnGenerarReporte');
     if (btnGenerarReporte) {
         btnGenerarReporte.addEventListener('click', function() {
-            this.textContent = '⏳ Generando PDF...';
+            const originalText = this.innerHTML; // Guardar el icono
+            this.textContent = '⏳ Generando...';
             this.disabled = true;
             
             setTimeout(() => {
-                generarReportePDF();
-                
-                this.textContent = '📊 Generar Reporte PDF';
-                this.disabled = false;
-                
-                alert('✅ Reporte PDF generado exitosamente!');
-            }, 500);
+                if (typeof generarReportePDF === 'function') {
+                    generarReportePDF();
+                    // Restaurar botón
+                    this.innerHTML = originalText;
+                    this.disabled = false;
+                } else {
+                    console.error("La función generarReportePDF no está cargada.");
+                    this.textContent = 'Error';
+                }
+            }, 800);
         });
     }
     
-    // Inicializar reloj
-    updateClock();
-    
-}); // FIN DOMContentLoaded
-
-// ========== FUNCIÓN ACTUALIZAR RELOJ ==========
-function updateClock() {
-    const now = new Date();
-    const hours = now.getHours();
-    const minutes = now.getMinutes();
-    const ampm = hours >= 12 ? 'PM' : 'AM';
-    const displayHours = hours % 12 || 12;
-    const timeString = `Hoy ${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-    const updateTimeEl = document.getElementById('updateTime');
-    if (updateTimeEl) {
-        updateTimeEl.textContent = timeString;
+    // ========== 5. RELOJ ==========
+    function updateClock() {
+        const updateTimeEl = document.getElementById('updateTime');
+        if (!updateTimeEl) return;
+        
+        const now = new Date();
+        const timeString = now.toLocaleTimeString('es-EC', { 
+            hour: '2-digit', 
+            minute: '2-digit',
+            hour12: true 
+        });
+        updateTimeEl.textContent = `Actualizado: Hoy ${timeString}`;
     }
-}
 
+    // Iniciar reloj y actualizar cada minuto
+    updateClock();
+    setInterval(updateClock, 60000);
 
-// Actualizar el reloj cada minuto
-setInterval(updateClock, 60000);
+});

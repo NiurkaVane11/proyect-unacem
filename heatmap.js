@@ -1,227 +1,230 @@
 /*
-   ARCHIVO: heatmap.js - MAPA DE CALOR MEJORADO CON COLORES VIBRANTES
+   ARCHIVO: heatmap.js
+   Funcionalidad de Mapas de Calor para LifeGuard UNACEM
 */
 
 document.addEventListener('DOMContentLoaded', function() {
     
+    // Referencias al DOM
     const canvas = document.getElementById('heatmap-canvas');
-    if (!canvas) {
-        console.warn('Canvas heatmap-canvas no encontrado');
-        return;
-    }
+    if (!canvas) return; // Si no estamos en la vista, salir
     
     const ctx = canvas.getContext('2d');
-    let heatmapData = [];
-    let currentRadius = 25;
-    let currentIntensity = 5;
+    const container = canvas.parentElement;
     
-    // ========== AJUSTAR TAMAÑO DEL CANVAS ==========
+    // Estado del heatmap
+    let points = [];
+    let config = {
+        radius: 25,
+        maxIntensity: 10,
+        blur: 15,
+        gradient: {
+            0.2: 'blue',
+            0.4: 'cyan',
+            0.6: 'lime',
+            0.8: 'yellow',
+            1.0: 'red'
+        }
+    };
+
+    // ========== 1. AJUSTAR TAMAÑO DEL CANVAS ==========
     function resizeCanvas() {
-        const container = canvas.parentElement;
-        canvas.width = container.clientWidth - 48;
-        canvas.height = 450;
-        redrawHeatmap();
+        if (!container) return;
+        canvas.width = container.clientWidth;
+        canvas.height = 400; // Altura fija o dinámica
+        draw();
     }
     
     window.addEventListener('resize', resizeCanvas);
-    resizeCanvas();
+    // Inicializar tamaño
+    setTimeout(resizeCanvas, 100); 
     
-    // ========== CONTROLES ==========
+    // ========== 2. CONTROLES ==========
     const intensitySlider = document.getElementById('heatmap-intensity');
     const radiusSlider = document.getElementById('heatmap-radius');
     const intensityValue = document.getElementById('intensity-value');
     const radiusValue = document.getElementById('radius-value');
     
-    if (intensitySlider && intensityValue) {
+    if (intensitySlider) {
         intensitySlider.addEventListener('input', (e) => {
-            currentIntensity = parseFloat(e.target.value);
-            intensityValue.textContent = e.target.value;
-            redrawHeatmap();
+            // Ajustamos la intensidad global simulando mayor "peso" en cada punto
+            config.maxIntensity = 15 - parseInt(e.target.value); 
+            if (intensityValue) intensityValue.textContent = e.target.value;
+            draw();
         });
     }
     
-    if (radiusSlider && radiusValue) {
+    if (radiusSlider) {
         radiusSlider.addEventListener('input', (e) => {
-            currentRadius = parseFloat(e.target.value);
-            radiusValue.textContent = e.target.value + 'px';
-            redrawHeatmap();
+            config.radius = parseInt(e.target.value);
+            if (radiusValue) radiusValue.textContent = e.target.value + 'px';
+            draw();
         });
     }
     
-    // ========== GENERAR DATOS ALEATORIOS ==========
+    // ========== 3. GENERAR DATOS (SIMULACIÓN INDUSTRIAL) ==========
     const generateBtn = document.getElementById('generate-heatmap');
     if (generateBtn) {
         generateBtn.addEventListener('click', () => {
-            heatmapData = [];
-            const numPoints = 40 + Math.floor(Math.random() * 60);
-            
-            for (let i = 0; i < numPoints; i++) {
-                heatmapData.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    intensity: 3 + Math.random() * 7 // Mayor intensidad base
-                });
-            }
-            
-            redrawHeatmap();
-            updateStats();
+            generateIndustrialData();
         });
     }
     
-    // ========== LIMPIAR MAPA ==========
+    function generateIndustrialData() {
+        points = [];
+        const numCentros = 3 + Math.floor(Math.random() * 3); // 3 a 5 áreas críticas
+        
+        for (let c = 0; c < numCentros; c++) {
+            // Centro del foco de riesgo
+            const centerX = Math.random() * canvas.width;
+            const centerY = Math.random() * canvas.height;
+            const numPointsInCluster = 20 + Math.floor(Math.random() * 30);
+            
+            // Dispersión alrededor del centro (Cluster)
+            for (let i = 0; i < numPointsInCluster; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 60; // Radio de dispersión
+                
+                points.push({
+                    x: centerX + Math.cos(angle) * distance,
+                    y: centerY + Math.sin(angle) * distance,
+                    value: Math.random() // Intensidad individual 0-1
+                });
+            }
+        }
+        
+        draw();
+        updateStats();
+    }
+    
+    // ========== 4. LIMPIAR MAPA ==========
     const clearBtn = document.getElementById('clear-heatmap');
     if (clearBtn) {
         clearBtn.addEventListener('click', () => {
-            heatmapData = [];
+            points = [];
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             resetStats();
         });
     }
     
-    // ========== AGREGAR PUNTOS CON CLIC ==========
+    // ========== 5. INTERACCIÓN (CLICK PARA AGREGAR RIESGO) ==========
     canvas.addEventListener('click', (e) => {
         const rect = canvas.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
         
-        heatmapData.push({
-            x: x,
-            y: y,
-            intensity: currentIntensity
-        });
+        // Agregar un clúster pequeño al hacer clic
+        for(let i=0; i<5; i++) {
+            points.push({
+                x: x + (Math.random() * 20 - 10),
+                y: y + (Math.random() * 20 - 10),
+                value: Math.random()
+            });
+        }
         
-        redrawHeatmap();
+        draw();
         updateStats();
     });
     
-    // ========== DIBUJAR MAPA DE CALOR MEJORADO ==========
-    function redrawHeatmap() {
-        // Limpiar canvas
+    // ========== 6. MOTOR DE DIBUJO ==========
+    function draw() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Crear un canvas temporal para el efecto de calor
+        if (points.length === 0) return;
+
+        // 1. Dibujar sombras (puntos negros con transparencia)
         const tempCanvas = document.createElement('canvas');
         tempCanvas.width = canvas.width;
         tempCanvas.height = canvas.height;
         const tempCtx = tempCanvas.getContext('2d');
         
-        // Dibujar cada punto con gradiente radial
-        heatmapData.forEach(point => {
-            const gradient = tempCtx.createRadialGradient(
-                point.x, point.y, 0,
-                point.x, point.y, currentRadius
-            );
-            
-            // Gradiente de blanco (centro caliente) a transparente
-            const alpha = Math.min(point.intensity / 10, 1);
-            gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
-            gradient.addColorStop(0.4, `rgba(255, 255, 255, ${alpha * 0.6})`);
-            gradient.addColorStop(0.7, `rgba(255, 255, 255, ${alpha * 0.3})`);
-            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
+        points.forEach(point => {
+            tempCtx.beginPath();
+            const alpha = 1 / config.maxIntensity; 
+            tempCtx.globalAlpha = alpha;
+            // Gradiente radial para cada punto
+            const gradient = tempCtx.createRadialGradient(point.x, point.y, 0, point.x, point.y, config.radius);
+            gradient.addColorStop(0, 'rgba(0,0,0,1)');
+            gradient.addColorStop(1, 'rgba(0,0,0,0)');
             
             tempCtx.fillStyle = gradient;
-            tempCtx.fillRect(0, 0, canvas.width, canvas.height);
+            tempCtx.arc(point.x, point.y, config.radius, 0, Math.PI * 2);
+            tempCtx.fill();
         });
         
-        // Obtener los datos de imagen
+        // 2. Colorear basado en la opacidad acumulada
         const imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
         const data = imageData.data;
+        const colorGradient = createColorGradient();
         
-        // Aplicar mapa de colores vibrante
         for (let i = 0; i < data.length; i += 4) {
-            const alpha = data[i + 3] / 255; // Normalizar alpha
-            
+            const alpha = data[i + 3]; // Canal Alpha es la "temperatura"
             if (alpha > 0) {
-                // Mapa de colores: azul -> cyan -> verde -> amarillo -> naranja -> rojo
-                let r, g, b;
+                const colorIndex = alpha * 4; // Mapear 0-255 a índice del gradiente
                 
-                if (alpha < 0.2) {
-                    // Azul oscuro
-                    r = 0;
-                    g = 0;
-                    b = 255 * (alpha / 0.2);
-                } else if (alpha < 0.4) {
-                    // Azul a Cyan
-                    const t = (alpha - 0.2) / 0.2;
-                    r = 0;
-                    g = 255 * t;
-                    b = 255;
-                } else if (alpha < 0.6) {
-                    // Cyan a Verde
-                    const t = (alpha - 0.4) / 0.2;
-                    r = 0;
-                    g = 255;
-                    b = 255 * (1 - t);
-                } else if (alpha < 0.75) {
-                    // Verde a Amarillo
-                    const t = (alpha - 0.6) / 0.15;
-                    r = 255 * t;
-                    g = 255;
-                    b = 0;
-                } else if (alpha < 0.9) {
-                    // Amarillo a Naranja
-                    const t = (alpha - 0.75) / 0.15;
-                    r = 255;
-                    g = 255 * (1 - t * 0.5);
-                    b = 0;
-                } else {
-                    // Naranja a Rojo
-                    const t = (alpha - 0.9) / 0.1;
-                    r = 255;
-                    g = 127 * (1 - t);
-                    b = 0;
-                }
-                
-                data[i] = r;
-                data[i + 1] = g;
-                data[i + 2] = b;
-                data[i + 3] = Math.min(255, alpha * 255 * 1.5); // Mayor opacidad
+                // Asignar color RGB del gradiente
+                data[i] = colorGradient[colorIndex];     // R
+                data[i + 1] = colorGradient[colorIndex + 1]; // G
+                data[i + 2] = colorGradient[colorIndex + 2]; // B
+                // Mantener alpha pero suavizado
+                data[i + 3] = alpha < 255 ? alpha * 1.5 : 255; 
             }
         }
         
-        // Dibujar el resultado final
         ctx.putImageData(imageData, 0, 0);
     }
     
-    // ========== ACTUALIZAR ESTADÍSTICAS ==========
+    // Crear paleta lineal de colores (1px width canvas)
+    function createColorGradient() {
+        const canvasGradient = document.createElement('canvas');
+        const ctxGradient = canvasGradient.getContext('2d');
+        canvasGradient.width = 256;
+        canvasGradient.height = 1;
+        
+        const grad = ctxGradient.createLinearGradient(0, 0, 256, 1);
+        for (const pos in config.gradient) {
+            grad.addColorStop(parseFloat(pos), config.gradient[pos]);
+        }
+        
+        ctxGradient.fillStyle = grad;
+        ctxGradient.fillRect(0, 0, 256, 1);
+        
+        return ctxGradient.getImageData(0, 0, 256, 1).data;
+    }
+    
+    // ========== 7. ESTADÍSTICAS ==========
     function updateStats() {
-        if (heatmapData.length === 0) {
+        if (points.length === 0) {
             resetStats();
             return;
         }
         
-        const intensities = heatmapData.map(p => p.intensity);
-        const max = Math.max(...intensities);
-        const min = Math.min(...intensities);
-        const avg = intensities.reduce((a, b) => a + b, 0) / intensities.length;
+        // Simulación de métricas basadas en densidad
+        const density = points.length;
+        // Asumiendo que el "calor" máximo depende de la superposición, 
+        // simplificamos para la demo:
+        const max = Math.min(100, (density / 5) + Math.random() * 10);
+        const min = Math.max(10, Math.random() * 20);
+        const avg = (max + min) / 2;
         
-        const maxTemp = document.getElementById('max-temp');
-        const minTemp = document.getElementById('min-temp');
-        const avgTemp = document.getElementById('avg-temp');
-        const dataPoints = document.getElementById('data-points');
-        
-        if (maxTemp) maxTemp.textContent = max.toFixed(1);
-        if (minTemp) minTemp.textContent = min.toFixed(1);
-        if (avgTemp) avgTemp.textContent = avg.toFixed(1);
-        if (dataPoints) dataPoints.textContent = heatmapData.length;
+        setText('max-temp', max.toFixed(1) + '°');
+        setText('min-temp', min.toFixed(1) + '°');
+        setText('avg-temp', avg.toFixed(1) + '°');
+        setText('data-points', density);
     }
     
-    // ========== RESETEAR ESTADÍSTICAS ==========
     function resetStats() {
-        const maxTemp = document.getElementById('max-temp');
-        const minTemp = document.getElementById('min-temp');
-        const avgTemp = document.getElementById('avg-temp');
-        const dataPoints = document.getElementById('data-points');
-        
-        if (maxTemp) maxTemp.textContent = '--';
-        if (minTemp) minTemp.textContent = '--';
-        if (avgTemp) avgTemp.textContent = '--';
-        if (dataPoints) dataPoints.textContent = '--';
+        setText('max-temp', '--');
+        setText('min-temp', '--');
+        setText('avg-temp', '--');
+        setText('data-points', '0');
     }
     
-    // ========== GENERAR DATOS INICIALES ==========
-    if (generateBtn) {
-        generateBtn.click();
+    function setText(id, val) {
+        const el = document.getElementById(id);
+        if (el) el.textContent = val;
     }
     
+    // Generar datos iniciales al cargar
+    setTimeout(generateIndustrialData, 500);
 });
