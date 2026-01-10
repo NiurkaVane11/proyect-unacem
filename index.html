@@ -4,27 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LifeGuard-UNACEM</title>
+    <link rel="icon" type="image/png" href="logo.png" />
     <link rel="stylesheet" href="styles.css" />
   </head>
-<!-- Agregar ANTES de tus scripts -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-
-<script src="data.js"></script>
-<script src="componente.js"></script>
-<script src="reportGenerator.js"></script> 
-<script src="app.js"></script>
-
-
-
-
 
   <body>
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-header">
         <div class="logo">
-          <img src="unacem.png" alt="UNACEM" class="logo-img" />
+          <img src="logo.png" alt="UNACEM" class="logo-img" />
         </div>
         <div class="logo-subtitle">Sistema de Seguridad</div>
       </div>
@@ -33,6 +22,14 @@
         <a href="#" class="nav-item active" data-section="indicadores">
           <span class="nav-icon">📊</span>
           <span class="nav-text">Indicadores</span>
+        </a>
+        <a href="#" class="nav-item" data-section="puntos-vida">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Puntos de Vida</span>
+        </a>
+        <a href="#" class="nav-item" data-section="puntos-vida">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Mapas </span>
         </a>
         <a href="#" class="nav-item" data-section="proyectos-activos">
           <span class="nav-icon">🏗️</span>
@@ -50,10 +47,6 @@
           <span class="nav-icon">📅</span>
           <span class="nav-text">Historial de Predicciones</span>
         </a>
-        <a href="#" class="nav-item" data-section="prevencion">
-          <span class="nav-icon">📋</span>
-          <span class="nav-text">Lista de Prevención</span>
-        </a>
       </nav>
 
       <div class="sidebar-footer">
@@ -68,7 +61,11 @@
     <main class="main-content">
       <!-- Header -->
       <header class="top-header">
+        <button id="btnToggleSidebar" class="hamburger" aria-label="Abrir menú">
+          ☰
+        </button>
         <h1 id="pageTitle">Indicadores</h1>
+
         <div class="header-actions">
           <button class="btn-refresh">🔄 Actualizar</button>
           <div class="user-info"></div>
@@ -77,19 +74,59 @@
 
       <!-- SECCIÓN 1: INDICADORES -->
       <section id="section-indicadores" class="content-section active">
-        <div class="metrics-grid" id="metricsContainer"></div>
+        <!-- ========== KPI PRINCIPAL (LO MÁS IMPORTANTE) ========== -->
+        <div class="kpi-principal">
+          <div class="card kpi-card">
+            <div class="card-header">
+              <h2>📊 Probabilidad de Accidente Hoy</h2>
+              <span class="kpi-fecha">Actualizado: Hoy 08:30</span>
+            </div>
+            <div class="card-body">
+              <!-- Aquí va el gauge/medidor -->
+              <div id="gaugeContainer"></div>
+            </div>
+            <div class="kpi-footer">
+              <div class="factor-critico">
+                ⚠️ <strong>Factor crítico:</strong> Trabajo en altura en Torre A
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <!-- ========== MÉTRICAS RÁPIDAS (4 TARJETAS) ========== -->
+        <div class="metrics-grid" id="metricsContainer">
+          <!-- Este grid se llenará dinámicamente con JavaScript -->
+        </div>
+
+        <!-- ========== ACCIONES DE PREVENCIÓN DINÁMICA ========== -->
+        <div class="card prevencion-card" id="prevencionCard">
+          <div class="card-header">
+            <h3>📋 Acciones Preventivas Recomendadas</h3>
+            <span class="badge-urgencia" id="badgeUrgencia">URGENTE</span>
+          </div>
+          <div class="card-body">
+            <div class="prevencion-intro" id="prevencionIntro">
+              <p>
+                Según el nivel de riesgo actual, se recomiendan las siguientes
+                acciones inmediatas:
+              </p>
+            </div>
+            <div class="acciones-list" id="accionesList">
+              <!-- Las acciones se generarán dinámicamente según el KPI -->
+            </div>
+            <div class="prevencion-footer">
+              <button class="btn-secondary" id="btnVerMasAcciones">
+                Ver todas las recomendaciones
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== RESUMEN Y REPORTE ========== -->
         <div class="dashboard-grid">
           <div class="card">
             <div class="card-header">
-              <h3>Probabilidad de Accidente Hoy</h3>
-            </div>
-            <div class="card-body" id="gaugeContainer"></div>
-          </div>
-
-          <div class="card">
-            <div class="card-header">
-              <h3>Resumen General</h3>
+              <h3>📈 Resumen General</h3>
             </div>
             <div class="card-body">
               <div class="summary-item">
@@ -104,25 +141,69 @@
                 <span class="summary-label">Eficiencia del Sistema:</span>
                 <span class="summary-value" style="color: #27ae60">96%</span>
               </div>
+            </div>
+          </div>
 
-          <!-- NUEVO BOTÓN DE REPORTE MEJORADO -->
-    <div class="reporte-container">
-   <div class="reporte-card">
-    <div class="reporte-icon-large">📄</div>
-    <h4>Reporte Mensual de Seguridad</h4>
-    <p>Resumen completo de indicadores del mes</p>
-    <button class="btn-reporte" id="btnGenerarReporte">
-      <span class="btn-icon">📊</span>
-      Generar Reporte PDF
-    </button>
-  </div>
-</div>
-
-
-
+          <div class="card card-reporte">
+            <div class="reporte-icon-large">📄</div>
+            <h4>Reporte Mensual de Seguridad</h4>
+            <p>Resumen completo de indicadores del mes</p>
+            <button class="btn-reporte" id="btnGenerarReporte">
+              <span class="btn-icon">📊</span>
+              Generar Reporte PDF
+            </button>
+          </div>
+        </div>
       </section>
 
-      <!-- SECCIÓN 2: PROYECTOS ACTIVOS -->
+      <!-- SECCIÓN 2: PUNTOS DE VIDA -->
+      <section id="section-puntos-vida" class="content-section">
+        <div class="section-header">
+          <h2>Puntos de Vida</h2>
+          <p>
+            Tu compromiso con la Seguridad y Salud en el Trabajo (SST) se
+            transforma en puntos que reconocen tus acciones preventivas y tu
+            participación activa.
+          </p>
+        </div>
+
+        <div class="puntos-contenido">
+          <!-- Cómo se obtienen -->
+          <div class="puntos-card">
+            <h3>¿Cómo se obtienen?</h3>
+            <ul>
+              <li>Reporte de actos y condiciones seguras</li>
+              <li>Participación en capacitaciones de SST</li>
+              <li>Cumplimiento de procedimientos de seguridad</li>
+              <li>Participación en campañas preventivas</li>
+            </ul>
+          </div>
+
+          <!-- Evaluación -->
+          <div class="puntos-card">
+            <h3>Evaluación</h3>
+            <p>
+              La evaluación de los Puntos de Vida se realiza cada seis meses y
+              aplica exclusivamente al personal laboral de UNACEM.
+            </p>
+          </div>
+
+          <!-- Recompensas -->
+          <div class="puntos-card">
+            <h3>Recompensas</h3>
+            <ul>
+              <li>Bonos económicos o vales de consumo</li>
+              <li>Días libres adicionales o salidas anticipadas</li>
+              <li>Tarjetas de supermercados</li>
+              <li>Reconocimiento público interno</li>
+              <li>Acceso preferente a capacitaciones certificadas</li>
+              <li>Merchandising exclusivo UNACEM</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 3: PROYECTOS ACTIVOS -->
       <section id="section-proyectos-activos" class="content-section">
         <div class="card">
           <div class="card-header">
@@ -144,6 +225,7 @@
         </div>
       </section>
 
+      <!-- SECCIÓN 4: ESTADÍSTICAS -->
       <section id="section-estadisticas" class="content-section">
         <div class="card card-wide">
           <div class="card-header">
@@ -232,7 +314,7 @@
           </div>
         </div>
 
-        <!-- NUEVA TABLA DE ESTADÍSTICAS HISTÓRICAS -->
+        <!-- TABLA DE ESTADÍSTICAS HISTÓRICAS -->
         <div class="card" style="margin-top: 30px">
           <div class="card-header">
             <h3>📊 Estadísticas Históricas Detalladas</h3>
@@ -251,7 +333,7 @@
         </div>
       </section>
 
-      <!-- SECCIÓN 4: FACTORES DE RIESGO -->
+      <!-- SECCIÓN 5: FACTORES DE RIESGO -->
       <section id="section-factores-riesgo" class="content-section">
         <div class="card">
           <div class="card-header">
@@ -261,7 +343,7 @@
         </div>
       </section>
 
-      <!-- SECCIÓN 5: HISTORIAL DE PREDICCIONES -->
+      <!-- SECCIÓN 6: HISTORIAL DE PREDICCIONES -->
       <section id="section-historial" class="content-section">
         <div class="card">
           <div class="card-header">
@@ -281,78 +363,16 @@
           </div>
         </div>
       </section>
-
-      <!-- SECCIÓN 6: LISTA DE PREVENCIÓN -->
-      <section id="section-prevencion" class="content-section">
-        <div class="card">
-          <div class="card-header">
-            <h3>📋 Lista de Medidas Preventivas</h3>
-            <button class="btn-add">+ Agregar Medida</button>
-          </div>
-          <div class="card-body">
-            <div class="prevencion-list">
-              <div class="prevencion-item">
-                <div class="prevencion-checkbox">
-                  <input type="checkbox" id="prev1" checked />
-                  <label for="prev1"
-                    >Inspección diaria de equipos de protección personal</label
-                  >
-                </div>
-                <span class="prevencion-priority high">Alta Prioridad</span>
-              </div>
-              <div class="prevencion-item">
-                <div class="prevencion-checkbox">
-                  <input type="checkbox" id="prev2" checked />
-                  <label for="prev2"
-                    >Capacitación en trabajo en altura - Torre A</label
-                  >
-                </div>
-                <span class="prevencion-priority high">Alta Prioridad</span>
-              </div>
-              <div class="prevencion-item">
-                <div class="prevencion-checkbox">
-                  <input type="checkbox" id="prev3" />
-                  <label for="prev3"
-                    >Revisión de andamios y estructuras temporales</label
-                  >
-                </div>
-                <span class="prevencion-priority medium">Prioridad Media</span>
-              </div>
-              <div class="prevencion-item">
-                <div class="prevencion-checkbox">
-                  <input type="checkbox" id="prev4" />
-                  <label for="prev4"
-                    >Actualización de señalización de seguridad</label
-                  >
-                </div>
-                <span class="prevencion-priority medium">Prioridad Media</span>
-              </div>
-              <div class="prevencion-item">
-                <div class="prevencion-checkbox">
-                  <input type="checkbox" id="prev5" checked />
-                  <label for="prev5">Simulacro de evacuación mensual</label>
-                </div>
-                <span class="prevencion-priority low">Prioridad Baja</span>
-              </div>
-              <div class="prevencion-item">
-                <div class="prevencion-checkbox">
-                  <input type="checkbox" id="prev6" />
-                  <label for="prev6"
-                    >Mantenimiento preventivo de maquinaria pesada</label
-                  >
-                </div>
-                <span class="prevencion-priority high">Alta Prioridad</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
     </main>
+
+    <!-- SCRIPTS AL FINAL -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
 
     <script src="data.js"></script>
     <script src="componente.js"></script>
     <script src="app.js"></script>
-    <script src="reportGenerator.js"></script> 
-
+    <script src="reportGenerator.js"></script>
   </body>
 </html>

@@ -17,7 +17,7 @@ function generarReportePDF() {
     // ========== LOGO (si existe) ==========
     // Intenta cargar el logo
     const logoImg = new Image();
-    logoImg.src = 'unacem.png';
+    logoImg.src = 'logo.png';
     
     // Agregar logo (40x40 píxeles)
     try {

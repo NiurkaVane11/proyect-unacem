@@ -1,8 +1,8 @@
 /*
-   ARCHIVO: app.js
+   ARCHIVO: app.js - LIMPIO Y OPTIMIZADO CON RESPONSIVE FIXED
 */
 
-// Inicializar la aplicación cuando el DOM esté listo
+// ========== INICIALIZACIÓN PRINCIPAL ==========
 document.addEventListener('DOMContentLoaded', function() {
     
     // Renderizar datos iniciales
@@ -13,18 +13,18 @@ document.addEventListener('DOMContentLoaded', function() {
     Components.renderHistoryTable(appData.historico);
     Components.renderEstadisticas(2025);
     
-    // Navegación del Sidebar
+    // ========== NAVEGACIÓN DEL SIDEBAR ==========
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');
     const pageTitle = document.getElementById('pageTitle');
     
     const titles = {
         'indicadores': 'Indicadores',
+        'puntos-vida': 'Puntos de Vida',
         'proyectos-activos': 'Proyectos Activos',
         'estadisticas': 'Estadísticas',
         'factores-riesgo': 'Factores de Riesgo',
-        'historial': 'Historial de Predicciones',
-        'prevencion': 'Lista de Prevención'
+        'historial': 'Historial de Predicciones'
     };
     
     navItems.forEach(item => {
@@ -54,54 +54,40 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Filtros de proyectos
+    // ========== FILTROS DE PROYECTOS ==========
     const filterButtons = document.querySelectorAll('.filter-btn');
     filterButtons.forEach(btn => {
         btn.addEventListener('click', function() {
-            // Remover active de todos
             filterButtons.forEach(b => b.classList.remove('active'));
-            
-            // Agregar active al clickeado
             this.classList.add('active');
             
-            // Obtener el filtro
             const filter = this.getAttribute('data-filter');
-            
-            // Re-renderizar la tabla con el filtro
             Components.renderProjectsTable(appData.proyectos, filter);
         });
     });
     
-    // Botón de actualizar
+    // ========== BOTÓN DE ACTUALIZAR ==========
     const btnRefresh = document.querySelector('.btn-refresh');
-    btnRefresh.addEventListener('click', function() {
-        this.textContent = '🔄 Actualizando...';
-        this.disabled = true;
-        
-        // Simular actualización
-        setTimeout(() => {
-            // Actualizar hora
-            const now = new Date();
-            const hours = now.getHours();
-            const minutes = now.getMinutes();
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            const displayHours = hours % 12 || 12;
-            const timeString = `Hoy ${displayHours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')} ${ampm}`;
-            document.getElementById('updateTime').textContent = timeString;
+    if (btnRefresh) {
+        btnRefresh.addEventListener('click', function() {
+            this.textContent = '🔄 Actualizando...';
+            this.disabled = true;
             
-            // Re-renderizar componentes
-            Components.renderMetrics(appData.metricas);
-            Components.renderGauge(appData.gauge);
-            Components.renderProjectsTable(appData.proyectos);
-            
-            this.textContent = '🔄 Actualizar';
-            this.disabled = false;
-            
-            alert('✅ Datos actualizados correctamente');
-        }, 1500);
-    });
+            setTimeout(() => {
+                updateClock();
+                Components.renderMetrics(appData.metricas);
+                Components.renderGauge(appData.gauge);
+                Components.renderProjectsTable(appData.proyectos);
+                
+                this.textContent = '🔄 Actualizar';
+                this.disabled = false;
+                
+                alert('✅ Datos actualizados correctamente');
+            }, 1500);
+        });
+    }
     
-    // Filtro de período en histórico
+    // ========== FILTROS ==========
     const periodFilter = document.getElementById('periodFilter');
     if (periodFilter) {
         periodFilter.addEventListener('change', function() {
@@ -110,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Filtro de año para estadísticas
     const yearFilterStats = document.getElementById('yearFilterStats');
     if (yearFilterStats) {
         yearFilterStats.addEventListener('change', function() {
@@ -118,55 +103,90 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    
- 
-    // Botón generar reporte mensual
+    // ========== BOTÓN GENERAR REPORTE PDF ==========
     const btnGenerarReporte = document.getElementById('btnGenerarReporte');
     if (btnGenerarReporte) {
-    btnGenerarReporte.addEventListener('click', function() {
-        this.textContent = '⏳ Generando PDF...';
-        this.disabled = true;
-        
-        setTimeout(() => {
-            generarReportePDF(); // <-- LLAMAR A LA FUNCIÓN
+        btnGenerarReporte.addEventListener('click', function() {
+            this.textContent = '⏳ Generando PDF...';
+            this.disabled = true;
             
-            this.textContent = '📄 Generar Reporte Mensual';
-            this.disabled = false;
-            
-            alert('✅ Reporte PDF generado exitosamente!');
-        }, 500);
-    });
-}
+            setTimeout(() => {
+                generarReportePDF();
+                
+                this.textContent = '📊 Generar Reporte PDF';
+                this.disabled = false;
+                
+                alert('✅ Reporte PDF generado exitosamente!');
+            }, 500);
+        });
+    }
 
+    // ========== MENÚ HAMBURGUESA RESPONSIVE (MEJORADO) ==========
+    const btnToggle = document.getElementById('btnToggleSidebar');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
 
+    // Crear overlay si no existe
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+    }
 
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        mainContent.classList.remove('sidebar-open');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
 
+    function openSidebar() {
+        sidebar.classList.add('active');
+        mainContent.classList.add('sidebar-open');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
 
+    if (btnToggle && sidebar && mainContent) {
+        // Toggle sidebar al hacer clic en el botón
+        btnToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (sidebar.classList.contains('active')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
 
+        // Cerrar al hacer clic en el overlay
+        overlay.addEventListener('click', function() {
+            closeSidebar();
+        });
 
+        // Cerrar sidebar al cambiar de sección en móviles
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                if (window.innerWidth <= 1024) {
+                    setTimeout(closeSidebar, 200);
+                }
+            });
+        });
 
-
-
-
-
-
-
-    
-    // Botón agregar medida de prevención
-    const btnAdd = document.querySelector('.btn-add');
-    if (btnAdd) {
-        btnAdd.addEventListener('click', function() {
-            const medida = prompt('Ingrese la nueva medida preventiva:');
-            if (medida && medida.trim() !== '') {
-                alert('✅ Medida agregada: ' + medida);
-                // Aquí podrías agregar la medida a la lista dinámicamente
+        // Cerrar sidebar al redimensionar a escritorio
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                closeSidebar();
             }
         });
     }
     
-}); // <-- CIERRE DEL DOMContentLoaded
+    // Inicializar reloj
+    updateClock();
+    
+}); // FIN DOMContentLoaded
 
-// Función para actualizar la hora en tiempo real
+// ========== FUNCIÓN ACTUALIZAR RELOJ ==========
 function updateClock() {
     const now = new Date();
     const hours = now.getHours();
