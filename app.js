@@ -143,6 +143,25 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // ========== FILTROS ==========
     const periodFilter = document.getElementById('periodFilter');
     if (periodFilter) {
@@ -195,6 +214,7 @@ function updateClock() {
         updateTimeEl.textContent = timeString;
     }
 }
+
 
 // Actualizar el reloj cada minuto
 setInterval(updateClock, 60000);

@@ -27,8 +27,8 @@
           <span class="nav-icon">📋</span>
           <span class="nav-text">Puntos de Vida</span>
         </a>
-        <a href="#" class="nav-item" data-section="puntos-vida">
-          <span class="nav-icon">📋</span>
+        <a href="#" class="nav-item" data-section="mapas-calor">
+          <span class="nav-icon">🗺️</span>
           <span class="nav-text">Mapas de Calor</span>
         </a>
         <a href="#" class="nav-item" data-section="proyectos-activos">
@@ -363,6 +363,90 @@
           </div>
         </div>
       </section>
+
+      <section id="section-mapas-calor" class="content-section">
+        <div class="section-header">
+          <h2>🗺️ Mapas de Calor</h2>
+          <p class="section-description">
+            Visualiza la distribución e intensidad de datos en tiempo real
+          </p>
+        </div>
+
+        <div class="controls-panel">
+          <div class="control-group">
+            <label for="heatmap-metric">Métrica:</label>
+            <select id="heatmap-metric" class="form-select">
+              <option value="temperatura">Temperatura</option>
+              <option value="humedad">Humedad</option>
+              <option value="actividad">Actividad</option>
+              <option value="densidad">Densidad Poblacional</option>
+            </select>
+          </div>
+
+          <div class="control-group">
+            <label for="heatmap-intensity">Intensidad:</label>
+            <input
+              type="range"
+              id="heatmap-intensity"
+              min="1"
+              max="10"
+              value="5"
+              class="form-range"
+            />
+            <span id="intensity-value">5</span>
+          </div>
+
+          <div class="control-group">
+            <label for="heatmap-radius">Radio:</label>
+            <input
+              type="range"
+              id="heatmap-radius"
+              min="10"
+              max="50"
+              value="25"
+              class="form-range"
+            />
+            <span id="radius-value">25px</span>
+          </div>
+
+          <button id="generate-heatmap" class="btn btn-primary">
+            Generar Mapa
+          </button>
+          <button id="clear-heatmap" class="btn btn-secondary">Limpiar</button>
+        </div>
+
+        <div class="heatmap-container">
+          <canvas id="heatmap-canvas"></canvas>
+          <div id="heatmap-legend" class="legend">
+            <div class="legend-title">Intensidad</div>
+            <div class="legend-gradient"></div>
+            <div class="legend-labels">
+              <span>Baja</span>
+              <span>Media</span>
+              <span>Alta</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-value" id="max-temp">--</div>
+            <div class="stat-label">Punto Máximo</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="min-temp">--</div>
+            <div class="stat-label">Punto Mínimo</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="avg-temp">--</div>
+            <div class="stat-label">Promedio</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="data-points">--</div>
+            <div class="stat-label">Puntos de Datos</div>
+          </div>
+        </div>
+      </section>
     </main>
 
     <!-- SCRIPTS AL FINAL -->
@@ -374,5 +458,6 @@
     <script src="componente.js"></script>
     <script src="app.js"></script>
     <script src="reportGenerator.js"></script>
+    <script src="heatmap.js"></script>
   </body>
 </html>
