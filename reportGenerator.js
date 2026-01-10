@@ -14,11 +14,23 @@ function generarReportePDF() {
     
     let yPos = 20;
     
+    // ========== LOGO (si existe) ==========
+    // Intenta cargar el logo
+    const logoImg = new Image();
+    logoImg.src = 'unacem.png';
+    
+    // Agregar logo (40x40 píxeles)
+    try {
+        doc.addImage(logoImg, 'PNG', 15, yPos - 5, 30, 30);
+    } catch (e) {
+        console.log('Logo no encontrado');
+    }
+    
     // ========== ENCABEZADO ==========
     doc.setFontSize(24);
     doc.setTextColor(...colorPrimario);
     doc.setFont(undefined, 'bold');
-    doc.text('🛡️ LifeGuard', 105, yPos, { align: 'center' });
+    doc.text('LifeGuard', 105, yPos, { align: 'center' });
     
     yPos += 8;
     doc.setFontSize(16);
@@ -60,7 +72,7 @@ function generarReportePDF() {
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...colorPrimario);
-    doc.text('📊 INDICADORES CLAVE', 20, yPos);
+    doc.text('INDICADORES CLAVE', 20, yPos);
     
     yPos += 10;
     
@@ -99,116 +111,108 @@ function generarReportePDF() {
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...colorPrimario);
-    doc.text('📋 ANÁLISIS DETALLADO', 20, yPos);
+    doc.text('ANALISIS DETALLADO', 20, yPos);
     
     yPos += 10;
+    
+    // Posiciones X de las columnas
+    const col1X = 20;
+    const col2X = 80;
+    const col3X = 140;
+    const colWidth = 55;
     
     // COLUMNA 1: PREVENCIÓN
     doc.setFontSize(12);
     doc.setTextColor(...colorSecundario);
-    doc.text('🛡️ PREVENCIÓN', 20, yPos);
+    doc.text('PREVENCION', col1X, yPos);
     
     yPos += 7;
     doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(0, 0, 0);
     const textoPrevencion = [
-        '• Capacitaciones realizadas: 45',
-        '• Inspecciones ejecutadas: 156',
-        '• Incumplimientos corregidos: 92%',
-        '• Personal con EPP adecuado: 98%'
+        'Capacitaciones realizadas: 45',
+        'Inspecciones ejecutadas: 156',
+        'Incumplimientos corregidos: 92%',
+        'Personal con EPP adecuado: 98%'
     ];
     textoPrevencion.forEach((linea, idx) => {
-        doc.text(linea, 22, yPos + (idx * 5));
+        doc.text(linea, col1X, yPos + (idx * 5), { maxWidth: colWidth });
     });
     
     // COLUMNA 2: LEGALES
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...colorSecundario);
-    doc.text('⚖️ LEGALES', 80, yPos - 7);
+    doc.text('LEGALES', col2X, yPos - 7);
     
     doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(0, 0, 0);
     const textoLegal = [
-        '• Cumplimiento normativo: 100%',
-        '• Certificaciones vigentes: SI',
-        '• Auditorías aprobadas: 4/4',
-        '• Sanciones: Ninguna'
+        'Cumplimiento normativo: 100%',
+        'Certificaciones vigentes: SI',
+        'Auditorias aprobadas: 4/4',
+        'Sanciones: Ninguna'
     ];
     textoLegal.forEach((linea, idx) => {
-        doc.text(linea, 82, yPos + (idx * 5));
+        doc.text(linea, col2X, yPos + (idx * 5), { maxWidth: colWidth });
     });
     
     // COLUMNA 3: ECONÓMICO
     doc.setFontSize(12);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...colorSecundario);
-    doc.text('💰 ECONÓMICO', 140, yPos - 7);
+    doc.text('ECONOMICO', col3X, yPos - 7);
     
     doc.setFontSize(9);
     doc.setFont(undefined, 'normal');
     doc.setTextColor(0, 0, 0);
     const textoEconomico = [
-        '• Ahorro por prevención: $125K',
-        '• Costo de incidentes: $8K',
-        '• ROI preventivo: 1,500%',
-        '• Inversión en EPP: $15K'
+        'Ahorro por prevencion: $125K',
+        'Costo de incidentes: $8K',
+        'ROI preventivo: 1,500%',
+        'Inversion en EPP: $15K'
     ];
     textoEconomico.forEach((linea, idx) => {
-        doc.text(linea, 142, yPos + (idx * 5));
+        doc.text(linea, col3X, yPos + (idx * 5), { maxWidth: colWidth });
     });
     
-    // ========== PROYECTOS DE ALTO RIESGO ==========
-    yPos += 35;
-    doc.setFontSize(14);
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...colorPrimario);
-    doc.text('⚠️ PROYECTOS DE ALTO RIESGO', 20, yPos);
+    // LÍNEAS DIVISORIAS VERTICALES entre columnas
+    const lineStartY = yPos - 10;
+    const lineEndY = yPos + 15;
     
-    yPos += 10;
+    doc.setDrawColor(...colorTexto);
+    doc.setLineWidth(0.3);
     
-    const proyectosRiesgo = appData.proyectos
-        .filter(p => p.riesgo === 'alto')
-        .map(p => [p.nombre, p.ubicacion, 'ALTO', 'Aumentando']);
+    // Línea entre Prevención y Legales
+    doc.line(col2X - 5, lineStartY, col2X - 5, lineEndY);
     
-    doc.autoTable({
-        startY: yPos,
-        head: [['Proyecto', 'Ubicación', 'Nivel', 'Tendencia']],
-        body: proyectosRiesgo,
-        theme: 'striped',
-        headStyles: { 
-            fillColor: colorPrimario,
-            fontSize: 10
-        },
-        styles: { 
-            fontSize: 9,
-            cellPadding: 4
-        }
-    });
+    // Línea entre Legales y Económico
+    doc.line(col3X - 5, lineStartY, col3X - 5, lineEndY);
     
     // ========== PIE DE PÁGINA ==========
-    const pageCount = doc.internal.getNumberOfPages();
-    for (let i = 1; i <= pageCount; i++) {
-        doc.setPage(i);
-        doc.setFontSize(8);
-        doc.setTextColor(...colorTexto);
-        doc.text(
-            `Página ${i} de ${pageCount}`,
-            105,
-            285,
-            { align: 'center' }
-        );
-        doc.text(
-            'LifeGuard UNACEM - Sistema Predictivo de Seguridad',
-            105,
-            290,
-            { align: 'center' }
-        );
-    }
+    yPos += 30;
+    doc.setFontSize(8);
+    doc.setTextColor(...colorTexto);
+    doc.setFont(undefined, 'italic');
+    doc.text(
+        'LifeGuard UNACEM - Sistema Predictivo de Seguridad',
+        105,
+        yPos,
+        { align: 'center' }
+    );
+    
+    yPos += 5;
+    doc.text(
+        `Pagina 1 de 1`,
+        105,
+        yPos,
+        { align: 'center' }
+    );
     
     // ========== GUARDAR PDF ==========
     const nombreArchivo = `Reporte_Seguridad_${new Date().getTime()}.pdf`;
     doc.save(nombreArchivo);
 }
+
