@@ -845,3 +845,66 @@ body {
     font-weight: bold;
     color: #2c3e50;
 }
+
+/* Contenedor del reporte */
+.reporte-container {
+    margin-top: 25px;
+    padding-top: 20px;
+    border-top: 2px solid #ecf0f1;
+}
+
+.reporte-card {
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 2px dashed #e74c3c;
+}
+
+.reporte-icon-large {
+    font-size: 48px;
+    margin-bottom: 10px;
+}
+
+.reporte-card h4 {
+    color: #2c3e50;
+    font-size: 16px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.reporte-card p {
+    color: #7f8c8d;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+.btn-reporte {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-reporte:hover {
+    background: linear-gradient(135deg, #c0392b 0%, #a93226 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(231, 76, 60, 0.4);
+}
+
+.btn-reporte:active {
+    transform: translateY(0);
+}
+
+.btn-icon {
+    font-size: 18px;
+}
