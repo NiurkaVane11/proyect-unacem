@@ -1,11 +1,9 @@
 /*
-   ARCHIVO: heatmap.js - MÓDULO DE MAPA DE CALOR
+   ARCHIVO: heatmap.js - MAPA DE CALOR MEJORADO CON COLORES VIBRANTES
 */
 
-// ========== INICIALIZACIÓN DEL MAPA DE CALOR ==========
 document.addEventListener('DOMContentLoaded', function() {
     
-    // Configuración del mapa de calor
     const canvas = document.getElementById('heatmap-canvas');
     if (!canvas) {
         console.warn('Canvas heatmap-canvas no encontrado');
@@ -20,15 +18,15 @@ document.addEventListener('DOMContentLoaded', function() {
     // ========== AJUSTAR TAMAÑO DEL CANVAS ==========
     function resizeCanvas() {
         const container = canvas.parentElement;
-        canvas.width = container.clientWidth - 64;
-        canvas.height = 400;
+        canvas.width = container.clientWidth - 48;
+        canvas.height = 450;
         redrawHeatmap();
     }
     
     window.addEventListener('resize', resizeCanvas);
     resizeCanvas();
     
-    // ========== CONTROLES DE INTENSIDAD Y RADIO ==========
+    // ========== CONTROLES ==========
     const intensitySlider = document.getElementById('heatmap-intensity');
     const radiusSlider = document.getElementById('heatmap-radius');
     const intensityValue = document.getElementById('intensity-value');
@@ -36,15 +34,17 @@ document.addEventListener('DOMContentLoaded', function() {
     
     if (intensitySlider && intensityValue) {
         intensitySlider.addEventListener('input', (e) => {
-            currentIntensity = e.target.value;
+            currentIntensity = parseFloat(e.target.value);
             intensityValue.textContent = e.target.value;
+            redrawHeatmap();
         });
     }
     
     if (radiusSlider && radiusValue) {
         radiusSlider.addEventListener('input', (e) => {
-            currentRadius = e.target.value;
+            currentRadius = parseFloat(e.target.value);
             radiusValue.textContent = e.target.value + 'px';
+            redrawHeatmap();
         });
     }
     
@@ -53,13 +53,13 @@ document.addEventListener('DOMContentLoaded', function() {
     if (generateBtn) {
         generateBtn.addEventListener('click', () => {
             heatmapData = [];
-            const numPoints = 30 + Math.floor(Math.random() * 50);
+            const numPoints = 40 + Math.floor(Math.random() * 60);
             
             for (let i = 0; i < numPoints; i++) {
                 heatmapData.push({
                     x: Math.random() * canvas.width,
                     y: Math.random() * canvas.height,
-                    intensity: Math.random() * currentIntensity
+                    intensity: 3 + Math.random() * 7 // Mayor intensidad base
                 });
             }
             
@@ -94,26 +94,93 @@ document.addEventListener('DOMContentLoaded', function() {
         updateStats();
     });
     
-    // ========== DIBUJAR MAPA DE CALOR ==========
+    // ========== DIBUJAR MAPA DE CALOR MEJORADO ==========
     function redrawHeatmap() {
+        // Limpiar canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         
-        // Crear gradient para cada punto
+        // Crear un canvas temporal para el efecto de calor
+        const tempCanvas = document.createElement('canvas');
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+        const tempCtx = tempCanvas.getContext('2d');
+        
+        // Dibujar cada punto con gradiente radial
         heatmapData.forEach(point => {
-            const gradient = ctx.createRadialGradient(
+            const gradient = tempCtx.createRadialGradient(
                 point.x, point.y, 0,
                 point.x, point.y, currentRadius
             );
             
-            const alpha = point.intensity / 10;
-            gradient.addColorStop(0, `rgba(255, 0, 0, ${alpha})`);
-            gradient.addColorStop(0.3, `rgba(255, 165, 0, ${alpha * 0.7})`);
-            gradient.addColorStop(0.6, `rgba(255, 255, 0, ${alpha * 0.4})`);
-            gradient.addColorStop(1, `rgba(0, 255, 0, 0)`);
+            // Gradiente de blanco (centro caliente) a transparente
+            const alpha = Math.min(point.intensity / 10, 1);
+            gradient.addColorStop(0, `rgba(255, 255, 255, ${alpha})`);
+            gradient.addColorStop(0.4, `rgba(255, 255, 255, ${alpha * 0.6})`);
+            gradient.addColorStop(0.7, `rgba(255, 255, 255, ${alpha * 0.3})`);
+            gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
             
-            ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            tempCtx.fillStyle = gradient;
+            tempCtx.fillRect(0, 0, canvas.width, canvas.height);
         });
+        
+        // Obtener los datos de imagen
+        const imageData = tempCtx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        
+        // Aplicar mapa de colores vibrante
+        for (let i = 0; i < data.length; i += 4) {
+            const alpha = data[i + 3] / 255; // Normalizar alpha
+            
+            if (alpha > 0) {
+                // Mapa de colores: azul -> cyan -> verde -> amarillo -> naranja -> rojo
+                let r, g, b;
+                
+                if (alpha < 0.2) {
+                    // Azul oscuro
+                    r = 0;
+                    g = 0;
+                    b = 255 * (alpha / 0.2);
+                } else if (alpha < 0.4) {
+                    // Azul a Cyan
+                    const t = (alpha - 0.2) / 0.2;
+                    r = 0;
+                    g = 255 * t;
+                    b = 255;
+                } else if (alpha < 0.6) {
+                    // Cyan a Verde
+                    const t = (alpha - 0.4) / 0.2;
+                    r = 0;
+                    g = 255;
+                    b = 255 * (1 - t);
+                } else if (alpha < 0.75) {
+                    // Verde a Amarillo
+                    const t = (alpha - 0.6) / 0.15;
+                    r = 255 * t;
+                    g = 255;
+                    b = 0;
+                } else if (alpha < 0.9) {
+                    // Amarillo a Naranja
+                    const t = (alpha - 0.75) / 0.15;
+                    r = 255;
+                    g = 255 * (1 - t * 0.5);
+                    b = 0;
+                } else {
+                    // Naranja a Rojo
+                    const t = (alpha - 0.9) / 0.1;
+                    r = 255;
+                    g = 127 * (1 - t);
+                    b = 0;
+                }
+                
+                data[i] = r;
+                data[i + 1] = g;
+                data[i + 2] = b;
+                data[i + 3] = Math.min(255, alpha * 255 * 1.5); // Mayor opacidad
+            }
+        }
+        
+        // Dibujar el resultado final
+        ctx.putImageData(imageData, 0, 0);
     }
     
     // ========== ACTUALIZAR ESTADÍSTICAS ==========
@@ -157,4 +224,4 @@ document.addEventListener('DOMContentLoaded', function() {
         generateBtn.click();
     }
     
-}); // FIN DOMContentLoaded
+});

@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const titles = {
         'indicadores': 'Indicadores',
         'puntos-vida': 'Puntos de Vida',
+        'mapas-calor': 'Mapas de Calor',
         'proyectos-activos': 'Proyectos Activos',
         'estadisticas': 'Estadísticas',
         'factores-riesgo': 'Factores de Riesgo',
