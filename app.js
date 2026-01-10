@@ -119,19 +119,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     
     // Botón generar reporte mensual
-    const btnGenerarReporte = document.getElementById('btnGenerarReporte');
-    if (btnGenerarReporte) {
-        btnGenerarReporte.addEventListener('click', function() {
-            this.textContent = '⏳ Generando...';
-            this.disabled = true;
+ 
+// Botón generar reporte mensual
+const btnGenerarReporte = document.getElementById('btnGenerarReporte');
+if (btnGenerarReporte) {
+    btnGenerarReporte.addEventListener('click', function() {
+        this.textContent = '⏳ Generando PDF...';
+        this.disabled = true;
+        
+        setTimeout(() => {
+            generarReportePDF(); // <-- LLAMAR A LA FUNCIÓN
             
-            setTimeout(() => {
-                alert('📄 Reporte Mensual de Seguridad generado exitosamente!\n\n✅ Incluye:\n• Indicadores de Frecuencia y Severidad\n• Proyectos en riesgo\n• Factores críticos detectados\n• Recomendaciones preventivas\n\n(En producción, aquí se descargaría el PDF)');
-                this.textContent = '📄 Generar Reporte Mensual';
-                this.disabled = false;
-            }, 1500);
-        });
-    }
+            this.textContent = '📄 Generar Reporte Mensual';
+            this.disabled = false;
+            
+            alert('✅ Reporte PDF generado exitosamente!');
+        }, 500);
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     // Botón agregar medida de prevención
     const btnAdd = document.querySelector('.btn-add');
