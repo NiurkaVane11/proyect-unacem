@@ -1,44 +1,27 @@
 /*
-   ARCHIVO: styles.css
-   Estilos Dashboard LifeGuard - UNACEM
-   Hackathon Vida Primero
+   ARCHIVO: styles.css - VERSIÓN FINAL (Soporte Digital Twin)
 */
 
-/* ========== 1. RESET Y BASE ========== */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-:root {
-    --primary-red: #E30613;      /* Rojo UNACEM */
-    --primary-dark: #B30000;
-    --secondary-grey: #58595B;   /* Gris UNACEM */
-    --dark-bg: #2c3e50;
-    --light-bg: #f5f6fa;
-    --text-color: #2c3e50;
-    --white: #ffffff;
-    --success: #27ae60;
-    --warning: #f39c12;
-    --danger: #e74c3c;
-    --shadow: 0 4px 12px rgba(0,0,0,0.08);
-}
-
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--light-bg);
-    color: var(--text-color);
+    background: #f5f6fa;
+    color: #2c3e50;
     display: flex;
     height: 100vh;
     overflow: hidden;
 }
 
-/* ========== 2. SIDEBAR ========== */
+/* ========== SIDEBAR ========== */
 .sidebar {
     width: 260px;
     background: linear-gradient(180deg, #1a1a1a 0%, #2c2c2c 100%);
-    color: var(--white);
+    color: #fff;
     display: flex;
     flex-direction: column;
     box-shadow: 4px 0 10px rgba(0,0,0,0.1);
@@ -47,17 +30,16 @@ body {
     top: 0;
     height: 100vh;
     z-index: 100;
-    transition: left 0.3s ease;
 }
 
 .sidebar-header {
-    padding: 25px 20px;
+    padding: 30px 20px;
     border-bottom: 1px solid rgba(255,255,255,0.1);
     text-align: center;
 }
 
 .logo-img {
-    max-width: 100px;
+    width: 100px;
     height: auto;
     margin-bottom: 10px;
 }
@@ -65,7 +47,6 @@ body {
 .logo-subtitle {
     font-size: 12px;
     color: #aaa;
-    font-weight: 500;
     letter-spacing: 0.5px;
 }
 
@@ -78,7 +59,7 @@ body {
 .nav-item {
     display: flex;
     align-items: center;
-    padding: 15px 25px;
+    padding: 15px 20px;
     color: #bbb;
     text-decoration: none;
     transition: all 0.3s ease;
@@ -88,17 +69,17 @@ body {
 
 .nav-item:hover {
     background: rgba(255,255,255,0.05);
-    color: var(--white);
+    color: #fff;
 }
 
 .nav-item.active {
-    background: rgba(227, 6, 19, 0.1); /* Rojo transparente */
-    color: var(--white);
-    border-left-color: var(--primary-red);
+    background: rgba(227, 6, 19, 0.1); /* Rojo UNACEM */
+    color: #fff;
+    border-left-color: #E30613;
 }
 
 .nav-icon {
-    font-size: 18px;
+    font-size: 20px;
     margin-right: 15px;
     width: 24px;
     text-align: center;
@@ -113,25 +94,23 @@ body {
     padding: 20px;
     background: rgba(0,0,0,0.2);
     border-top: 1px solid rgba(255,255,255,0.05);
-}
-
-.update-info {
     text-align: center;
 }
 
-.update-label {
+.update-info {
     font-size: 11px;
     color: #888;
-    margin-bottom: 4px;
 }
 
 .update-time {
     font-size: 12px;
-    color: var(--primary-red);
+    color: #E30613;
     font-weight: bold;
+    margin-top: 5px;
+    display: block;
 }
 
-/* ========== 3. MAIN CONTENT ========== */
+/* ========== MAIN CONTENT ========== */
 .main-content {
     margin-left: 260px;
     flex: 1;
@@ -139,12 +118,11 @@ body {
     flex-direction: column;
     height: 100vh;
     overflow: hidden;
-    position: relative;
     width: calc(100% - 260px);
 }
 
 .top-header {
-    background: var(--white);
+    background: #fff;
     padding: 15px 30px;
     display: flex;
     justify-content: space-between;
@@ -155,7 +133,7 @@ body {
 
 .top-header h1 {
     font-size: 22px;
-    color: var(--secondary-grey);
+    color: #2c3e50;
     font-weight: 700;
 }
 
@@ -167,8 +145,8 @@ body {
 
 .btn-refresh {
     padding: 8px 16px;
-    background: var(--primary-red);
-    color: var(--white);
+    background: #E30613;
+    color: #fff;
     border: none;
     border-radius: 6px;
     cursor: pointer;
@@ -181,12 +159,7 @@ body {
 }
 
 .btn-refresh:hover {
-    background: var(--primary-dark);
-}
-
-.btn-refresh:disabled {
-    background: #ccc;
-    cursor: not-allowed;
+    background: #c0392b;
 }
 
 .user-info {
@@ -204,8 +177,8 @@ body {
 .user-avatar {
     width: 38px;
     height: 38px;
-    background: var(--secondary-grey);
-    color: var(--white);
+    background: #58595B;
+    color: #fff;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -214,7 +187,7 @@ body {
     font-size: 14px;
 }
 
-/* ========== 4. SECCIONES Y CONTENIDO ========== */
+/* ========== CONTENT SECTIONS ========== */
 .content-section {
     display: none;
     padding: 30px;
@@ -233,16 +206,16 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ========== 5. KPI CARDS & GAUGE ========== */
+/* ========== KPI CARDS ========== */
 .kpi-principal {
     margin-bottom: 2rem;
 }
 
 .kpi-card {
-    background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
-    border-top: 4px solid var(--primary-red);
+    background: #fff;
+    border-top: 4px solid #E30613;
     border-radius: 12px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .kpi-card .card-header {
@@ -255,7 +228,7 @@ body {
 
 .kpi-card h2 {
     font-size: 18px;
-    color: var(--text-color);
+    color: #2c3e50;
 }
 
 .kpi-fecha {
@@ -272,37 +245,52 @@ body {
     justify-content: center;
 }
 
+.kpi-footer {
+    padding: 15px 25px;
+    background: #fff8f8;
+    border-top: 1px solid #eee;
+}
+
+.factor-critico {
+    color: #c0392b;
+    font-size: 13px;
+    text-align: center;
+}
+
+/* ========== GAUGE ========== */
 .gauge-container {
-    position: relative;
-    width: 200px;
-    height: 100px; /* Semicírculo */
-    overflow: hidden;
+    padding: 10px 0;
 }
 
 .gauge {
     width: 200px;
-    height: 200px;
-    border-radius: 50%;
+    height: 100px; /* Semicírculo */
+    margin: 0 auto;
     position: relative;
-    /* El gradiente se define inline en JS para dinamismo, o aquí como base */
+    border-top-left-radius: 200px;
+    border-top-right-radius: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
 }
 
 .gauge-inner {
-    position: absolute;
-    top: 20px;
-    left: 20px;
     width: 160px;
-    height: 160px;
-    background: var(--white);
-    border-radius: 50%;
+    height: 80px;
+    background: #fff;
+    border-top-left-radius: 160px;
+    border-top-right-radius: 160px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 40px; /* Ajuste para semicírculo */
+    justify-content: flex-end;
+    padding-bottom: 10px;
+    z-index: 10;
 }
 
 .gauge-value {
-    font-size: 42px;
+    font-size: 32px;
     font-weight: 800;
 }
 
@@ -313,19 +301,7 @@ body {
     text-transform: uppercase;
 }
 
-.kpi-footer {
-    padding: 15px 25px;
-    background: #fff8f8;
-    border-top: 1px solid #eee;
-}
-
-.factor-critico {
-    color: var(--primary-dark);
-    font-size: 13px;
-    text-align: center;
-}
-
-/* ========== 6. METRICS GRID ========== */
+/* ========== METRICS GRID ========== */
 .metrics-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -334,10 +310,10 @@ body {
 }
 
 .metric-card {
-    background: var(--white);
+    background: #fff;
     border-radius: 12px;
     padding: 25px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     border-left: 5px solid #ccc;
     transition: transform 0.2s;
 }
@@ -346,25 +322,24 @@ body {
     transform: translateY(-3px);
 }
 
-.metric-card.danger { border-left-color: var(--danger); }
-.metric-card.warning { border-left-color: var(--warning); }
-.metric-card.success { border-left-color: var(--success); }
+.metric-card.danger { border-left-color: #E30613; }
+.metric-card.warning { border-left-color: #f39c12; }
+.metric-card.success { border-left-color: #27ae60; }
 
 .metric-label { font-size: 13px; color: #7f8c8d; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
 .metric-value { font-size: 36px; font-weight: 700; margin-bottom: 5px; }
 .metric-sublabel { font-size: 12px; color: #95a5a6; }
 
-/* ========== 7. ACCIONES & REPORTES ========== */
+/* ========== PREVENCIÓN CARD ========== */
 .prevencion-card {
-    background: var(--white);
+    background: #fff;
     border-radius: 12px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
     margin-bottom: 30px;
-    overflow: hidden;
 }
 
 .badge-urgencia {
-    background: var(--danger);
+    background: #E30613;
     color: white;
     padding: 5px 12px;
     border-radius: 20px;
@@ -377,6 +352,16 @@ body {
     0% { opacity: 1; }
     50% { opacity: 0.8; }
     100% { opacity: 1; }
+}
+
+.prevencion-intro {
+    background: rgba(227, 6, 19, 0.05);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #555;
+    font-size: 14px;
+    border-left: 3px solid #E30613;
 }
 
 .acciones-list {
@@ -393,16 +378,19 @@ body {
     background: #f8f9fa;
     border-radius: 8px;
     border: 1px solid #eee;
+    transition: transform 0.2s;
 }
 
+.accion:hover { transform: translateX(5px); }
+
 .accion-icono { font-size: 24px; }
-.accion-contenido h4 { font-size: 15px; margin-bottom: 4px; color: var(--text-color); }
+.accion-contenido h4 { font-size: 15px; margin-bottom: 4px; color: #2c3e50; }
 .accion-contenido p { font-size: 13px; color: #666; margin-bottom: 8px; }
 
-.accion-meta { display: flex; gap: 10px; font-size: 11px; font-weight: 600; }
+.accion-meta { display: flex; gap: 10px; font-size: 11px; font-weight: 600; align-items: center; flex-wrap: wrap; }
 .plazo { background: #e8f0fe; color: #1967d2; padding: 2px 8px; border-radius: 4px; }
 
-/* Dashboard Grid (Resumen & Reporte) */
+/* ========== DASHBOARD GRID & REPORT ========== */
 .dashboard-grid {
     display: grid;
     grid-template-columns: 1.5fr 1fr;
@@ -410,11 +398,9 @@ body {
 }
 
 .card {
-    background: var(--white);
+    background: #fff;
     border-radius: 12px;
-    box-shadow: var(--shadow);
-    display: flex;
-    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
 
 .card-header {
@@ -425,9 +411,8 @@ body {
     align-items: center;
 }
 
-.card-header h3 { font-size: 16px; font-weight: 600; color: var(--text-color); }
-
-.card-body { padding: 20px; flex: 1; }
+.card-header h3 { font-size: 16px; font-weight: 600; color: #2c3e50; }
+.card-body { padding: 20px; }
 
 .summary-item {
     display: flex;
@@ -437,22 +422,22 @@ body {
     font-size: 14px;
 }
 
-/* Card Reporte */
 .card-reporte {
     background: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
     color: white;
     text-align: center;
+    display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 30px;
 }
 
 .reporte-icon-large { font-size: 40px; margin-bottom: 15px; }
-.card-reporte h4 { margin-bottom: 8px; font-size: 18px; }
+.card-reporte h4 { margin-bottom: 8px; font-size: 18px; color: #fff; }
 .card-reporte p { color: #aaa; font-size: 13px; margin-bottom: 20px; }
 
 .btn-reporte {
-    background: var(--primary-red);
+    background: #E30613;
     color: white;
     border: none;
     padding: 12px 24px;
@@ -463,150 +448,171 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin: 0 auto;
 }
 
-.btn-reporte:hover { transform: scale(1.05); background: var(--primary-dark); }
+.btn-reporte:hover { transform: scale(1.05); background: #c0392b; }
 
-/* ========== 8. TABLAS ========== */
-.project-table, .stats-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-.project-table th, .stats-table th {
-    background: #f8f9fa;
-    color: #555;
-    font-weight: 600;
-    padding: 12px 15px;
-    text-align: left;
-    font-size: 12px;
-    text-transform: uppercase;
-    border-bottom: 2px solid #eee;
-}
-
-.project-table td, .stats-table td {
-    padding: 12px 15px;
-    border-bottom: 1px solid #eee;
-    color: #333;
-}
-
+/* ========== TABLES ========== */
+.project-table, .stats-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.project-table th, .stats-table th { background: #f8f9fa; color: #555; font-weight: 600; padding: 12px 15px; text-align: left; font-size: 12px; text-transform: uppercase; border-bottom: 2px solid #eee; }
+.project-table td, .stats-table td { padding: 12px 15px; border-bottom: 1px solid #eee; color: #333; }
 .project-table tr:hover, .stats-table tr:hover { background: #fdfdfd; }
 
-.risk-badge {
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 700;
-    display: inline-block;
-}
-
+.risk-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; display: inline-block; }
 .risk-high { background: #ffebee; color: #c62828; }
 .risk-medium { background: #fff8e1; color: #f57f17; }
 .risk-low { background: #e8f5e9; color: #2e7d32; }
 
-/* Estilos específicos para tabla estadísticas */
+/* Tabla Estadísticas */
 .table-responsive { overflow-x: auto; }
-.stats-table .text-danger { color: var(--danger); font-weight: bold; }
-.stats-table .text-warning { color: var(--warning); font-weight: bold; }
+.stats-table .text-danger { color: #E30613; font-weight: bold; }
 .stats-table .total-row { background: #ecf0f1; font-weight: 700; }
 
-/* ========== 9. MAPAS DE CALOR ========== */
-.controls-panel {
-    background: var(--white);
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    margin-bottom: 20px;
+/* ========== PUNTOS DE VIDA ========== */
+.section-header { text-align: center; margin-bottom: 30px; }
+.section-header h2 { font-size: 28px; color: #E30613; margin-bottom: 10px; }
+.puntos-contenido { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+.puntos-card { background: #fff; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border-top: 4px solid #58595B; }
+.puntos-card h3 { color: #E30613; margin-bottom: 15px; font-size: 18px; }
+.puntos-card ul { padding-left: 20px; line-height: 1.6; color: #555; }
+.puntos-card li { margin-bottom: 8px; }
+
+/* ========== CHART CONTAINER ========== */
+.chart-container-large {
+    position: relative;
+    height: 300px;
+    width: 100%;
+}
+
+/* ========== FILTER BUTTONS ========== */
+.filter-buttons { display: flex; gap: 10px; }
+.filter-btn { padding: 6px 12px; border: 1px solid #ddd; background: #fff; border-radius: 6px; cursor: pointer; font-size: 12px; }
+.filter-btn.active { background: #E30613; color: white; border-color: #E30613; }
+
+/* ========== RISK FACTORS ========== */
+.factor-item { display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #eee; }
+.factor-bar { width: 100px; height: 8px; background: #eee; border-radius: 4px; overflow: hidden; margin-bottom: 4px; }
+.factor-fill { height: 100%; border-radius: 4px; }
+
+/* =========================================================
+   ESTILOS PARA MAPA DE CALOR (DIGITAL TWIN) - FINAL
+   ========================================================= */
+
+#section-mapas-calor .controls-panel {
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
     align-items: flex-end;
+    background: #fff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
 }
 
-.control-group {
+#section-mapas-calor .control-group {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
+    flex: 1;
+    min-width: 150px;
 }
 
-.control-group label { font-size: 12px; font-weight: 600; color: #666; }
-.form-select, .form-range { padding: 8px; border: 1px solid #ddd; border-radius: 6px; }
+#section-mapas-calor .control-group label {
+    font-weight: 600;
+    color: #2c3e50;
+    font-size: 13px;
+}
 
-.btn-primary {
-    background: var(--secondary-grey);
-    color: white;
+.form-select, .form-range {
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    width: 100%;
+}
+
+#section-mapas-calor .btn {
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    font-weight: 600;
 }
 
+#section-mapas-calor .btn-primary { background: #58595B; color: white; }
+#section-mapas-calor .btn-primary:hover { background: #444; }
+
+/* --- CONTENEDOR DEL MAPA (DIGITAL TWIN) --- */
 .heatmap-container {
-    background: var(--white);
+    position: relative;
+    background: #fff;
     padding: 20px;
     border-radius: 12px;
-    box-shadow: var(--shadow);
-    position: relative;
-    height: 450px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    height: 550px; /* Altura suficiente para el plano */
+    overflow: hidden;
+    border: 1px solid #eee;
 }
 
 #heatmap-canvas {
     width: 100%;
     height: 100%;
-    background: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Factory_layout.svg/1024px-Factory_layout.svg.png') no-repeat center center;
-    background-size: cover; /* Fondo simulado de planta */
+    /* IMAGEN DE FONDO DE PLANO TÉCNICO */
+    background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Factory_layout.svg/1024px-Factory_layout.svg.png');
+    background-size: cover;
+    background-position: center;
+    border: 1px solid #ccc;
+    cursor: crosshair;
+}
+
+/* --- TOOLTIP FLOTANTE (CRÍTICO PARA LA DEMO) --- */
+.heatmap-tooltip {
+    position: absolute;
+    background: rgba(20, 20, 30, 0.95);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 6px;
+    font-size: 12px;
+    pointer-events: none; /* Permite clickar a través de él */
+    z-index: 1000;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    border-left: 3px solid #E30613;
+    display: none; /* JS controla la visibilidad */
+    min-width: 160px;
+    backdrop-filter: blur(4px);
+    transition: opacity 0.1s;
+}
+
+/* --- ESTADÍSTICAS DEL MAPA --- */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-top: 15px;
+}
+
+.stat-card {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
     border: 1px solid #eee;
 }
 
-/* ========== 10. PUNTOS DE VIDA (ESTILOS NUEVOS) ========== */
-.puntos-contenido {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 25px;
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #E30613;
 }
 
-.puntos-card {
-    background: var(--white);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    border-top: 4px solid var(--secondary-grey);
-}
-
-.puntos-card h3 { color: var(--primary-red); margin-bottom: 15px; font-size: 18px; }
-.puntos-card ul { padding-left: 20px; line-height: 1.6; color: #555; }
-.puntos-card li { margin-bottom: 8px; }
-
-/* ========== 11. FACTORES DE RIESGO ========== */
-.factor-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-bottom: 1px solid #eee;
-}
-
-.factor-bar {
-    width: 100px;
-    height: 8px;
-    background: #eee;
-    border-radius: 4px;
-    overflow: hidden;
-    margin-bottom: 4px;
-}
-
-.factor-fill { height: 100%; border-radius: 4px; }
-
-/* ========== 12. RESPONSIVE (MÓVIL) ========== */
+/* ========== RESPONSIVE ========== */
 .hamburger {
     display: none;
     background: none;
     border: none;
     font-size: 24px;
     cursor: pointer;
-    color: var(--secondary-grey);
+    color: #2c3e50;
 }
 
 .sidebar-overlay {
@@ -618,26 +624,13 @@ body {
     opacity: 0;
     transition: opacity 0.3s;
 }
-
 .sidebar-overlay.active { display: block; opacity: 1; }
 
 @media (max-width: 1024px) {
     .sidebar { left: -260px; }
     .sidebar.active { left: 0; }
-    
     .main-content { margin-left: 0; width: 100%; }
-    
     .hamburger { display: block; margin-right: 15px; }
-    
     .dashboard-grid { grid-template-columns: 1fr; }
-    
-    .controls-panel { flex-direction: column; align-items: stretch; }
-    
-    .top-header h1 { font-size: 18px; }
-    .user-info .user-name { display: none; } /* Ocultar nombre en móvil */
-}
-
-@media (max-width: 480px) {
-    .metrics-grid { grid-template-columns: 1fr; }
-    .kpi-card .card-header { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .heatmap-container { height: 400px; }
 }
