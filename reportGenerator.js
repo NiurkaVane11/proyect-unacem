@@ -211,7 +211,7 @@ function generarReportePDF() {
         { align: 'center' }
     );
     
-    // ========== GUARDAR PDF ==========
+    // ========== GUARDAR PDF ==
     const nombreArchivo = `Reporte_Seguridad_${new Date().getTime()}.pdf`;
     doc.save(nombreArchivo);
 }
