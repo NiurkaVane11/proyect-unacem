@@ -58,14 +58,16 @@
 
     <main class="main-content">
       <header class="top-header">
-        <button id="btnToggleSidebar" class="hamburger" aria-label="Abrir menú">☰</button>
+        <button id="btnToggleSidebar" class="hamburger" aria-label="Abrir menú">
+          ☰
+        </button>
         <h1 id="pageTitle">Monitoreo de Seguridad Industrial</h1>
 
         <div class="header-actions">
           <button class="btn-refresh">🔄 Actualizar Modelo</button>
           <div class="user-info">
-             <span class="user-name">Admin SST</span>
-             <div class="user-avatar">UA</div>
+            <span class="user-name">Admin SST</span>
+            <div class="user-avatar">UA</div>
           </div>
         </div>
       </header>
@@ -82,26 +84,30 @@
             </div>
             <div class="kpi-footer">
               <div class="factor-critico">
-                ⚠️ <strong>Alerta del Modelo:</strong> Baja tasa de IVLs en Área de Molienda
+                ⚠️ <strong>Alerta del Modelo:</strong> Baja tasa de IVLs en Área
+                de Molienda
               </div>
             </div>
           </div>
         </div>
 
-        <div class="metrics-grid" id="metricsContainer">
-          </div>
+        <div class="metrics-grid" id="metricsContainer"></div>
 
         <div class="card prevencion-card" id="prevencionCard">
           <div class="card-header">
             <h3>📋 Acciones Recomendadas (IA)</h3>
-            <span class="badge-urgencia" id="badgeUrgencia">ALTA PRIORIDAD</span>
+            <span class="badge-urgencia" id="badgeUrgencia"
+              >ALTA PRIORIDAD</span
+            >
           </div>
           <div class="card-body">
             <div class="prevencion-intro" id="prevencionIntro">
-                <p>Basado en el análisis de 27,000 incidentes, se sugieren las siguientes acciones:</p>
+              <p>
+                Basado en el análisis de 27,000 incidentes, se sugieren las
+                siguientes acciones:
+              </p>
             </div>
-            <div class="acciones-list" id="accionesList">
-                </div>
+            <div class="acciones-list" id="accionesList"></div>
           </div>
         </div>
 
@@ -129,7 +135,9 @@
           <div class="card card-reporte">
             <div class="reporte-icon-large">📄</div>
             <h4>Informe Ejecutivo UNACEM</h4>
-            <p>Exportar análisis de indicadores reactivos y proactivos en PDF.</p>
+            <p>
+              Exportar análisis de indicadores reactivos y proactivos en PDF.
+            </p>
             <button class="btn-reporte" id="btnGenerarReporte">
               <span class="btn-icon">⬇️</span> Descargar Reporte
             </button>
@@ -138,8 +146,11 @@
       </section>
 
       <section id="section-puntos-vida" class="content-section">
-        <div class="section-header" style="text-align: center; margin-bottom: 30px;">
-          <h2 style="color: var(--primary-red);">Programa "Puntos de Vida"</h2>
+        <div
+          class="section-header"
+          style="text-align: center; margin-bottom: 30px"
+        >
+          <h2 style="color: var(--primary-red)">Programa "Puntos de Vida"</h2>
           <p>Reconociendo el compromiso con la seguridad en UNACEM.</p>
         </div>
         <div class="puntos-contenido">
@@ -170,57 +181,114 @@
       </section>
 
       <section id="section-mapas-calor" class="content-section">
-        <div class="section-header" style="margin-bottom: 20px;">
-            <h2>🗺️ Mapas de Calor de Riesgo</h2>
-            <p>Visualización de focos de incidentes en tiempo real.</p>
-        </div>
-        
-        <div class="controls-panel">
-            <div class="control-group">
-                <label>Área de Planta:</label>
-                <select class="form-select">
-                    <option>Horno 1</option>
-                    <option>Molienda</option>
-                    <option>Cantera</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="heatmap-intensity">Intensidad:</label>
-                <input type="range" id="heatmap-intensity" min="1" max="10" value="5" class="form-range" />
-            </div>
-            <div class="control-group">
-                <label for="heatmap-radius">Radio:</label>
-                <input type="range" id="heatmap-radius" min="10" max="50" value="25" class="form-range" />
-            </div>
-            <button id="generate-heatmap" class="btn btn-primary">Simular Incidentes</button>
-            <button id="clear-heatmap" class="btn" style="background: #ccc;">Limpiar</button>
+        <div class="section-header" style="margin-bottom: 20px">
+          <h2>🗺️ Mapa de Calor de Incidentes por Área</h2>
+          <p>Distribución de incidentes por zona y turno - Última semana</p>
         </div>
 
-        <div class="heatmap-container">
-            <canvas id="heatmap-canvas"></canvas>
-            <div class="stats-grid" style="margin-top: 15px;">
-                <div class="stat-card">
-                    <div class="stat-value" id="data-points">0</div>
-                    <div class="stat-label">Eventos Detectados</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-value" id="max-temp">--</div>
-                    <div class="stat-label">Intensidad Máxima</div>
-                </div>
+        <div class="controls-panel">
+          <div class="control-group">
+            <label>Período:</label>
+            <select class="form-select" id="period-select">
+              <option>Última Semana</option>
+              <option>Último Mes</option>
+              <option>Último Trimestre</option>
+            </select>
+          </div>
+          <div class="control-group">
+            <label>Tipo de Incidente:</label>
+            <select class="form-select" id="type-select">
+              <option>Todos</option>
+              <option>Críticos</option>
+              <option>Alto Riesgo</option>
+              <option>Medio Riesgo</option>
+            </select>
+          </div>
+          <button class="btn btn-primary" id="refresh-heatmap">
+            🔄 Actualizar Datos
+          </button>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Incidentes por Área Operativa y Horario</h3>
+          </div>
+          <div class="card-body">
+            <div class="heatmap-table-container">
+              <table class="heatmap-table" id="heatmapTable">
+                <thead>
+                  <tr>
+                    <th style="width: 200px">Área Operativa</th>
+                    <th>00:00 - 02:00</th>
+                    <th>02:00 - 04:00</th>
+                    <th>04:00 - 06:00</th>
+                    <th>06:00 - 08:00</th>
+                    <th>08:00 - 10:00</th>
+                    <th>10:00 - 12:00</th>
+                    <th>12:00 - 14:00</th>
+                    <th>14:00 - 16:00</th>
+                    <th>16:00 - 18:00</th>
+                    <th>18:00 - 20:00</th>
+                    <th>20:00 - 22:00</th>
+                    <th>22:00 - 24:00</th>
+                  </tr>
+                </thead>
+                <tbody id="tableBody">
+                  <!-- El contenido se genera dinámicamente con JS -->
+                </tbody>
+              </table>
             </div>
+            <div class="legend">
+              <span class="legend-label">Intensidad:</span>
+              <div class="legend-gradient">
+                <span class="intensity-0"></span>
+                <span class="intensity-3"></span>
+                <span class="intensity-5"></span>
+                <span class="intensity-7"></span>
+                <span class="intensity-9"></span>
+                <span class="intensity-11"></span>
+                <span class="intensity-14"></span>
+              </div>
+              <span class="legend-label">Bajo → Alto</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid" style="margin-top: 20px">
+          <div class="stat-card">
+            <div class="stat-value" id="totalIncidents">0</div>
+            <div class="stat-label">Total Incidentes</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="criticalArea">-</div>
+            <div class="stat-label">Área Más Crítica</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="criticalTime">-</div>
+            <div class="stat-label">Hora Pico</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value" id="avgIncidents">0</div>
+            <div class="stat-label">Promedio por Área</div>
+          </div>
         </div>
       </section>
+
+      <!-- Tooltip flotante -->
+      <div class="heatmap-tooltip" id="heatmap-tooltip"></div>
 
       <section id="section-proyectos-activos" class="content-section">
         <div class="card">
           <div class="card-header">
-             <h3>Estado de Riesgo por Área Operativa</h3>
-             <div class="filter-buttons">
-              <button class="filter-btn active" data-filter="todos">Todas</button>
+            <h3>Estado de Riesgo por Área Operativa</h3>
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-filter="todos">
+                Todas
+              </button>
               <button class="filter-btn" data-filter="alto">Crítico</button>
               <button class="filter-btn" data-filter="medio">Alerta</button>
               <button class="filter-btn" data-filter="bajo">Normal</button>
-             </div>
+            </div>
           </div>
           <div class="card-body">
             <table class="project-table" id="projectsTable"></table>
@@ -230,75 +298,100 @@
 
       <section id="section-estadisticas" class="content-section">
         <div class="card card-wide">
-             <div class="card-header">
-                <h3>Tendencia del Índice de Frecuencia (IF) - Últimos 12 Meses</h3>
-             </div>
-             <div class="card-body">
-                <div class="chart-container-large">
-                   <svg width="100%" height="100%" viewBox="0 0 800 300">
-                      <line x1="50" y1="250" x2="750" y2="250" stroke="#ddd" stroke-width="2"/>
-                      <line x1="50" y1="50" x2="50" y2="250" stroke="#ddd" stroke-width="2"/>
-                      <text x="20" y="255" font-size="10" fill="#666">0</text>
-                      <text x="20" y="150" font-size="10" fill="#666">10</text>
-                      <text x="20" y="50" font-size="10" fill="#666">20</text>
-                      <polyline points="50,250 110,250 170,250 230,86 290,193 350,201 410,250 470,250 530,250 590,250 650,250 710,250" 
-                                fill="none" stroke="#e74c3c" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                      <circle cx="230" cy="86" r="4" fill="#e74c3c" />
-                      <text x="235" y="80" fill="#666" font-size="11">Abril (16.3)</text>
-                      
-                      <circle cx="350" cy="201" r="4" fill="#e74c3c" />
-                      <text x="355" y="195" fill="#666" font-size="11">Junio (4.8)</text>
-                   </svg>
-                </div>
-             </div>
-        </div>
-        
-        <div class="card" style="margin-top: 20px;">
-            <div class="card-header">
-                <h3>Histórico Oficial de Indicadores (2023-2025)</h3>
-                <div class="filter-bar">
-                    <label>Año:</label>
-                    <select id="yearFilterStats" style="padding: 5px; border-radius: 4px;">
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                    </select>
-                </div>
+          <div class="card-header">
+            <h3>Tendencia del Índice de Frecuencia (IF) - Últimos 12 Meses</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container-large">
+              <svg width="100%" height="100%" viewBox="0 0 800 300">
+                <line
+                  x1="50"
+                  y1="250"
+                  x2="750"
+                  y2="250"
+                  stroke="#ddd"
+                  stroke-width="2"
+                />
+                <line
+                  x1="50"
+                  y1="50"
+                  x2="50"
+                  y2="250"
+                  stroke="#ddd"
+                  stroke-width="2"
+                />
+                <text x="20" y="255" font-size="10" fill="#666">0</text>
+                <text x="20" y="150" font-size="10" fill="#666">10</text>
+                <text x="20" y="50" font-size="10" fill="#666">20</text>
+                <polyline
+                  points="50,250 110,250 170,250 230,86 290,193 350,201 410,250 470,250 530,250 590,250 650,250 710,250"
+                  fill="none"
+                  stroke="#e74c3c"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                />
+                <circle cx="230" cy="86" r="4" fill="#e74c3c" />
+                <text x="235" y="80" fill="#666" font-size="11">
+                  Abril (16.3)
+                </text>
+
+                <circle cx="350" cy="201" r="4" fill="#e74c3c" />
+                <text x="355" y="195" fill="#666" font-size="11">
+                  Junio (4.8)
+                </text>
+              </svg>
             </div>
-            <div class="card-body" id="estadisticasTableContainer">
-                </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 20px">
+          <div class="card-header">
+            <h3>Histórico Oficial de Indicadores (2023-2025)</h3>
+            <div class="filter-bar">
+              <label>Año:</label>
+              <select
+                id="yearFilterStats"
+                style="padding: 5px; border-radius: 4px"
+              >
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body" id="estadisticasTableContainer"></div>
         </div>
       </section>
 
       <section id="section-factores-riesgo" class="content-section">
-          <div class="card">
-            <div class="card-header">
-                <h3>⚠️ Factores de Riesgo Críticos Detectados</h3>
-            </div>
-            <div class="card-body" id="riskFactorsContainer"></div>
+        <div class="card">
+          <div class="card-header">
+            <h3>⚠️ Factores de Riesgo Críticos Detectados</h3>
           </div>
+          <div class="card-body" id="riskFactorsContainer"></div>
+        </div>
       </section>
 
       <section id="section-historial" class="content-section">
         <div class="card">
-            <div class="card-header">
-                <h3>📅 Historial de Predicciones del Modelo</h3>
-            </div>
-            <div class="card-body">
-                <table class="project-table" id="historyTable">
-                    </table>
-            </div>
+          <div class="card-header">
+            <h3>📅 Historial de Predicciones del Modelo</h3>
+          </div>
+          <div class="card-body">
+            <table class="project-table" id="historyTable"></table>
+          </div>
         </div>
       </section>
-
     </main>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
-    
+
     <script src="data.js"></script>
     <script src="componente.js"></script>
     <script src="app.js"></script>
+    <script src="heatmap.js"></script>
     <script src="heatmap.js"></script>
     <script src="reportGenerator.js"></script>
   </body>
