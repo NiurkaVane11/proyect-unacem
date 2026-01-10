@@ -13,10 +13,13 @@ document.addEventListener('DOMContentLoaded', function() {
     Components.renderHistoryTable(appData.historico);
     Components.renderEstadisticas(2025);
     
-    // ========== NAVEGACIÓN DEL SIDEBAR ==========
+    // ========== ELEMENTOS DOM ==========
     const navItems = document.querySelectorAll('.nav-item');
     const sections = document.querySelectorAll('.content-section');
     const pageTitle = document.getElementById('pageTitle');
+    const btnToggle = document.getElementById('btnToggleSidebar');
+    const sidebar = document.querySelector('.sidebar');
+    const mainContent = document.querySelector('.main-content');
     
     const titles = {
         'indicadores': 'Indicadores',
@@ -27,6 +30,28 @@ document.addEventListener('DOMContentLoaded', function() {
         'historial': 'Historial de Predicciones'
     };
     
+    // ========== CREAR OVERLAY ==========
+    let overlay = document.querySelector('.sidebar-overlay');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.className = 'sidebar-overlay';
+        document.body.appendChild(overlay);
+    }
+    
+    // ========== FUNCIONES MENÚ ==========
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+    
+    function openSidebar() {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+    
+    // ========== NAVEGACIÓN DEL SIDEBAR ==========
     navItems.forEach(item => {
         item.addEventListener('click', function(e) {
             e.preventDefault();
@@ -51,8 +76,39 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Actualizar el título
             pageTitle.textContent = titles[sectionId] || 'Dashboard';
+            
+            // CERRAR MENÚ EN MÓVIL
+            if (window.innerWidth <= 1024) {
+                setTimeout(closeSidebar, 200);
+            }
         });
     });
+    
+    // ========== MENÚ HAMBURGUESA ==========
+    if (btnToggle && sidebar) {
+        // Toggle sidebar al hacer clic en el botón
+        btnToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            if (sidebar.classList.contains('active')) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        });
+
+        // Cerrar al hacer clic en el overlay
+        overlay.addEventListener('click', function() {
+            closeSidebar();
+        });
+
+        // Cerrar al redimensionar a escritorio
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 1024) {
+                closeSidebar();
+            }
+        });
+    }
     
     // ========== FILTROS DE PROYECTOS ==========
     const filterButtons = document.querySelectorAll('.filter-btn');
@@ -118,66 +174,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 alert('✅ Reporte PDF generado exitosamente!');
             }, 500);
-        });
-    }
-
-    // ========== MENÚ HAMBURGUESA RESPONSIVE (MEJORADO) ==========
-    const btnToggle = document.getElementById('btnToggleSidebar');
-    const sidebar = document.querySelector('.sidebar');
-    const mainContent = document.querySelector('.main-content');
-
-    // Crear overlay si no existe
-    let overlay = document.querySelector('.sidebar-overlay');
-    if (!overlay) {
-        overlay = document.createElement('div');
-        overlay.className = 'sidebar-overlay';
-        document.body.appendChild(overlay);
-    }
-
-    function closeSidebar() {
-        sidebar.classList.remove('active');
-        mainContent.classList.remove('sidebar-open');
-        overlay.classList.remove('active');
-        document.body.style.overflow = '';
-    }
-
-    function openSidebar() {
-        sidebar.classList.add('active');
-        mainContent.classList.add('sidebar-open');
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    if (btnToggle && sidebar && mainContent) {
-        // Toggle sidebar al hacer clic en el botón
-        btnToggle.addEventListener('click', function(e) {
-            e.stopPropagation();
-            if (sidebar.classList.contains('active')) {
-                closeSidebar();
-            } else {
-                openSidebar();
-            }
-        });
-
-        // Cerrar al hacer clic en el overlay
-        overlay.addEventListener('click', function() {
-            closeSidebar();
-        });
-
-        // Cerrar sidebar al cambiar de sección en móviles
-        navItems.forEach(item => {
-            item.addEventListener('click', function() {
-                if (window.innerWidth <= 1024) {
-                    setTimeout(closeSidebar, 200);
-                }
-            });
-        });
-
-        // Cerrar sidebar al redimensionar a escritorio
-        window.addEventListener('resize', function() {
-            if (window.innerWidth > 1024) {
-                closeSidebar();
-            }
         });
     }
     
