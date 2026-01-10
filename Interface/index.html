@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistema Predictivo- UNACEM</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">
+          <img src="unacem.png" alt="UNACEM" class="logo-img" />
+        </div>
+        <div class="logo-subtitle">Sistema de Seguridad</div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-section="indicadores">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Indicadores</span>
+        </a>
+        <a href="#" class="nav-item" data-section="proyectos-activos">
+          <span class="nav-icon">🏗️</span>
+          <span class="nav-text">Proyectos Activos</span>
+        </a>
+        <a href="#" class="nav-item" data-section="estadisticas">
+          <span class="nav-icon">📊</span>
+          <span class="nav-text">Estadísticas</span>
+        </a>
+        <a href="#" class="nav-item" data-section="factores-riesgo">
+          <span class="nav-icon">⚠️</span>
+          <span class="nav-text">Factores de Riesgo</span>
+        </a>
+        <a href="#" class="nav-item" data-section="historial">
+          <span class="nav-icon">📅</span>
+          <span class="nav-text">Historial de Predicciones</span>
+        </a>
+        <a href="#" class="nav-item" data-section="prevencion">
+          <span class="nav-icon">📋</span>
+          <span class="nav-text">Lista de Prevención</span>
+        </a>
+        <a href="#" class="nav-item" data-section="reportes">
+          <span class="nav-icon">📈</span>
+          <span class="nav-text">Reportes</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="update-info">
+          <div class="update-label">Última actualización</div>
+          <div class="update-time" id="updateTime">Hoy 08:30 AM</div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="top-header">
+        <h1 id="pageTitle">Indicadores</h1>
+        <div class="header-actions">
+          <button class="btn-refresh">🔄 Actualizar</button>
+          <div class="user-info"></div>
+        </div>
+      </header>
+
+      <!-- SECCIÓN 1: INDICADORES -->
+      <section id="section-indicadores" class="content-section active">
+        <div class="metrics-grid" id="metricsContainer"></div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>Probabilidad de Accidente Hoy</h3>
+            </div>
+            <div class="card-body" id="gaugeContainer"></div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <h3>Resumen General</h3>
+            </div>
+            <div class="card-body">
+              <div class="summary-item">
+                <span class="summary-label">Total Proyectos:</span>
+                <span class="summary-value">6</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Proyectos Críticos:</span>
+                <span class="summary-value" style="color: #e74c3c">2</span>
+              </div>
+              <div class="summary-item">
+                <span class="summary-label">Eficiencia del Sistema:</span>
+                <span class="summary-value" style="color: #27ae60">96%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 2: PROYECTOS ACTIVOS -->
+      <section id="section-proyectos-activos" class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>Todos los Proyectos Activos</h3>
+            <div class="filter-buttons">
+              <button class="filter-btn active" data-filter="todos">
+                Todos
+              </button>
+              <button class="filter-btn" data-filter="alto">Alto Riesgo</button>
+              <button class="filter-btn" data-filter="medio">
+                Medio Riesgo
+              </button>
+              <button class="filter-btn" data-filter="bajo">Bajo Riesgo</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <table class="project-table" id="projectsTable"></table>
+          </div>
+        </div>
+      </section>
+
+      <section id="section-estadisticas" class="content-section">
+        <div class="card card-wide">
+          <div class="card-header">
+            <h3>Evolución del Índice de Riesgo (30 días)</h3>
+          </div>
+          <div class="card-body">
+            <div class="chart-container-large">
+              <svg width="100%" height="100%" viewBox="0 0 800 350">
+                <line
+                  x1="50"
+                  y1="30"
+                  x2="50"
+                  y2="270"
+                  stroke="#ccc"
+                  stroke-width="2"
+                />
+                <line
+                  x1="50"
+                  y1="270"
+                  x2="780"
+                  y2="270"
+                  stroke="#ccc"
+                  stroke-width="2"
+                />
+                <polyline
+                  class="chart-path"
+                  points="50,200 120,180 190,130 260,150 330,170 400,160 470,190 540,200 610,230 680,220 750,210"
+                />
+                <text x="15" y="35" font-size="12" fill="#666">100</text>
+                <text x="20" y="105" font-size="12" fill="#666">75</text>
+                <text x="20" y="175" font-size="12" fill="#666">50</text>
+                <text x="20" y="245" font-size="12" fill="#666">25</text>
+                <text x="25" y="275" font-size="12" fill="#666">0</text>
+                <text x="40" y="295" font-size="11" fill="#666">Día 1</text>
+                <text x="180" y="295" font-size="11" fill="#666">Día 7</text>
+                <text x="320" y="295" font-size="11" fill="#666">Día 14</text>
+                <text x="460" y="295" font-size="11" fill="#666">Día 21</text>
+                <text x="600" y="295" font-size="11" fill="#666">Día 30</text>
+                <line
+                  x1="50"
+                  y1="105"
+                  x2="780"
+                  y2="105"
+                  stroke="#ecf0f1"
+                  stroke-width="1"
+                  stroke-dasharray="5,5"
+                />
+                <line
+                  x1="50"
+                  y1="175"
+                  x2="780"
+                  y2="175"
+                  stroke="#ecf0f1"
+                  stroke-width="1"
+                  stroke-dasharray="5,5"
+                />
+                <line
+                  x1="50"
+                  y1="245"
+                  x2="780"
+                  y2="245"
+                  stroke="#ecf0f1"
+                  stroke-width="1"
+                  stroke-dasharray="5,5"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-value">28%</div>
+            <div class="stat-label">Reducción de Riesgo vs Mes Anterior</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⏱️</div>
+            <div class="stat-value">12 días</div>
+            <div class="stat-label">Sin Accidentes Reportados</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">✅</div>
+            <div class="stat-value">156</div>
+            <div class="stat-label">Inspecciones Realizadas</div>
+          </div>
+        </div>
+
+        <!-- NUEVA TABLA DE ESTADÍSTICAS HISTÓRICAS -->
+        <div class="card" style="margin-top: 30px">
+          <div class="card-header">
+            <h3>📊 Estadísticas Históricas Detalladas</h3>
+            <div class="filter-bar">
+              <label>Año:</label>
+              <select id="yearFilterStats">
+                <option value="2025">2025</option>
+                <option value="2024">2024</option>
+                <option value="2023">2023</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="estadisticasTableContainer"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 4: FACTORES DE RIESGO -->
+      <section id="section-factores-riesgo" class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>⚠️ Factores de Riesgo Críticos Detectados</h3>
+          </div>
+          <div class="card-body" id="riskFactorsContainer"></div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 5: HISTORIAL DE PREDICCIONES -->
+      <section id="section-historial" class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>📅 Historial de Predicciones</h3>
+            <div class="filter-bar">
+              <label>Período:</label>
+              <select id="periodFilter">
+                <option>Últimos 7 días</option>
+                <option>Últimos 30 días</option>
+                <option>Últimos 3 meses</option>
+                <option>Año completo</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body">
+            <table class="project-table" id="historyTable"></table>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 6: LISTA DE PREVENCIÓN -->
+      <section id="section-prevencion" class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>📋 Lista de Medidas Preventivas</h3>
+            <button class="btn-add">+ Agregar Medida</button>
+          </div>
+          <div class="card-body">
+            <div class="prevencion-list">
+              <div class="prevencion-item">
+                <div class="prevencion-checkbox">
+                  <input type="checkbox" id="prev1" checked />
+                  <label for="prev1"
+                    >Inspección diaria de equipos de protección personal</label
+                  >
+                </div>
+                <span class="prevencion-priority high">Alta Prioridad</span>
+              </div>
+              <div class="prevencion-item">
+                <div class="prevencion-checkbox">
+                  <input type="checkbox" id="prev2" checked />
+                  <label for="prev2"
+                    >Capacitación en trabajo en altura - Torre A</label
+                  >
+                </div>
+                <span class="prevencion-priority high">Alta Prioridad</span>
+              </div>
+              <div class="prevencion-item">
+                <div class="prevencion-checkbox">
+                  <input type="checkbox" id="prev3" />
+                  <label for="prev3"
+                    >Revisión de andamios y estructuras temporales</label
+                  >
+                </div>
+                <span class="prevencion-priority medium">Prioridad Media</span>
+              </div>
+              <div class="prevencion-item">
+                <div class="prevencion-checkbox">
+                  <input type="checkbox" id="prev4" />
+                  <label for="prev4"
+                    >Actualización de señalización de seguridad</label
+                  >
+                </div>
+                <span class="prevencion-priority medium">Prioridad Media</span>
+              </div>
+              <div class="prevencion-item">
+                <div class="prevencion-checkbox">
+                  <input type="checkbox" id="prev5" checked />
+                  <label for="prev5">Simulacro de evacuación mensual</label>
+                </div>
+                <span class="prevencion-priority low">Prioridad Baja</span>
+              </div>
+              <div class="prevencion-item">
+                <div class="prevencion-checkbox">
+                  <input type="checkbox" id="prev6" />
+                  <label for="prev6"
+                    >Mantenimiento preventivo de maquinaria pesada</label
+                  >
+                </div>
+                <span class="prevencion-priority high">Alta Prioridad</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SECCIÓN 7: REPORTES -->
+      <section id="section-reportes" class="content-section">
+        <div class="card">
+          <div class="card-header">
+            <h3>📈 Generar Reportes</h3>
+          </div>
+          <div class="card-body">
+            <div class="reportes-grid">
+              <div class="reporte-item">
+                <div class="reporte-icon">📄</div>
+                <h4>Reporte Mensual de Seguridad</h4>
+                <p>Resumen completo de indicadores del mes</p>
+                <button class="btn-primary">Generar PDF</button>
+              </div>
+              <div class="reporte-item">
+                <div class="reporte-icon">📊</div>
+                <h4>Análisis de Tendencias</h4>
+                <p>Gráficos y estadísticas de los últimos 3 meses</p>
+                <button class="btn-primary">Generar PDF</button>
+              </div>
+              <div class="reporte-item">
+                <div class="reporte-icon">⚠️</div>
+                <h4>Reporte de Incidentes</h4>
+                <p>Detalle de accidentes y medidas preventivas</p>
+                <button class="btn-primary">Generar PDF</button>
+              </div>
+              <div class="reporte-item">
+                <div class="reporte-icon">🏗️</div>
+                <h4>Estado por Proyecto</h4>
+                <p>Reporte individual de cada proyecto activo</p>
+                <button class="btn-primary">Generar PDF</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="componente.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
