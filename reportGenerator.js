@@ -1,6 +1,6 @@
 /*
    ARCHIVO: reportGenerator.js
-   Generador de reportes PDF
+   Generador de reportes PDF con Mapa de Calor
 */
 
 function generarReportePDF() {
@@ -15,11 +15,9 @@ function generarReportePDF() {
     let yPos = 20;
     
     // ========== LOGO (si existe) ==========
-    // Intenta cargar el logo
     const logoImg = new Image();
     logoImg.src = 'logo.png';
     
-    // Agregar logo (40x40 píxeles)
     try {
         doc.addImage(logoImg, 'PNG', 15, yPos - 5, 30, 30);
     } catch (e) {
@@ -107,7 +105,94 @@ function generarReportePDF() {
     
     yPos = doc.lastAutoTable.finalY + 15;
     
-    // ========== SECCIÓN DE 3 COLUMNAS ==========
+    // ========== CAPTURAR MAPA DE CALOR ==========
+    const heatmapCanvas = document.getElementById('heatmap-canvas');
+    
+    if (heatmapCanvas) {
+        doc.setFontSize(14);
+        doc.setFont(undefined, 'bold');
+        doc.setTextColor(...colorPrimario);
+        doc.text('MAPA DE CALOR - DISTRIBUCIÓN DE RIESGOS', 20, yPos);
+        
+        yPos += 5;
+        
+        // Obtener la métrica seleccionada
+        const metricSelect = document.getElementById('heatmap-metric');
+        const metricaNombre = metricSelect ? metricSelect.options[metricSelect.selectedIndex].text : 'Temperatura';
+        
+        // Obtener parámetros actuales
+        const intensitySlider = document.getElementById('heatmap-intensity');
+        const radiusSlider = document.getElementById('heatmap-radius');
+        const intensidad = intensitySlider ? intensitySlider.value : '5';
+        const radio = radiusSlider ? radiusSlider.value : '25';
+        
+        doc.setFontSize(9);
+        doc.setFont(undefined, 'normal');
+        doc.setTextColor(...colorTexto);
+        doc.text(`Métrica: ${metricaNombre} | Intensidad: ${intensidad} | Radio: ${radio}px`, 20, yPos);
+        
+        yPos += 8;
+        
+        try {
+            // Capturar el canvas como imagen
+            const heatmapImage = heatmapCanvas.toDataURL('image/png');
+            
+            // Calcular dimensiones (mantener aspecto 16:9 aproximado)
+            const imgWidth = 140
+            ; // Ancho del PDF menos márgenes
+            const imgHeight = (heatmapCanvas.height / heatmapCanvas.width) * imgWidth;
+            
+            // Agregar la imagen al PDF
+            doc.addImage(heatmapImage, 'PNG', 20, yPos, imgWidth, imgHeight);
+            
+            yPos += imgHeight + 5;
+            
+            // Agregar leyenda de colores
+            doc.setFontSize(8);
+            doc.setTextColor(...colorTexto);
+            doc.text('Leyenda: ', 20, yPos);
+            
+            // Dibujar gradiente de colores como referencia
+            const legendY = yPos - 3;
+            const colors = [
+                { color: [0, 0, 255], label: 'Bajo' },
+                { color: [0, 255, 255], label: '' },
+                { color: [0, 255, 0], label: 'Medio' },
+                { color: [255, 255, 0], label: '' },
+                { color: [255, 127, 0], label: '' },
+                { color: [255, 0, 0], label: 'Alto' }
+            ];
+            
+            const legendWidth = 60;
+            const segmentWidth = legendWidth / colors.length;
+            let legendX = 35;
+            
+            colors.forEach((colorData, i) => {
+                doc.setFillColor(...colorData.color);
+                doc.rect(legendX, legendY, segmentWidth, 3, 'F');
+                
+                if (colorData.label) {
+                    doc.setTextColor(...colorTexto);
+                    doc.text(colorData.label, legendX, yPos + 5);
+                }
+                
+                legendX += segmentWidth;
+            });
+            
+            yPos += 10;
+            
+        } catch (e) {
+            console.error('Error al capturar mapa de calor:', e);
+            doc.setFontSize(10);
+            doc.setTextColor(200, 0, 0);
+            doc.text('Error: No se pudo capturar el mapa de calor', 20, yPos);
+            yPos += 10;
+        }
+    } else {
+        console.warn('Canvas heatmap-canvas no encontrado');
+    }
+    
+    // ========== TABLA DE DOBLE ENTRADA: ANÁLISIS DETALLADO ==========
     doc.setFontSize(14);
     doc.setFont(undefined, 'bold');
     doc.setTextColor(...colorPrimario);
@@ -115,84 +200,59 @@ function generarReportePDF() {
     
     yPos += 10;
     
-    // Posiciones X de las columnas
-    const col1X = 20;
-    const col2X = 80;
-    const col3X = 140;
-    const colWidth = 55;
-    
-    // COLUMNA 1: PREVENCIÓN
-    doc.setFontSize(12);
-    doc.setTextColor(...colorSecundario);
-    doc.text('PREVENCION', col1X, yPos);
-    
-    yPos += 7;
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(0, 0, 0);
-    const textoPrevencion = [
-        'Capacitaciones realizadas: 45',
-        'Inspecciones ejecutadas: 156',
-        'Incumplimientos corregidos: 92%',
-        'Personal con EPP adecuado: 98%'
+    // Datos para la tabla de doble entrada
+    const datosAnalisis = [
+        [
+            'CONTRATISTA',
+            'Capacitaciones: 28\nInspecciones: 89\nIncumplimientos: 8%\nEPP adecuado: 96%',
+            'Cumplimiento: 100%\nCertificaciones: SI\nAuditorias: 2/2\nSanciones: Ninguna',
+            'Ahorro: $72K\nCostos: $5K\nROI: 1,440%\nInversión EPP: $9K'
+        ],
+        [
+            'EMPLEADO',
+            'Capacitaciones: 17\nInspecciones: 67\nIncumplimientos: 2%\nEPP adecuado: 99%',
+            'Cumplimiento: 100%\nCertificaciones: SI\nAuditorias: 2/2\nSanciones: Ninguna',
+            'Ahorro: $53K\nCostos: $3K\nROI: 1,766%\nInversión EPP: $6K'
+        ]
     ];
-    textoPrevencion.forEach((linea, idx) => {
-        doc.text(linea, col1X, yPos + (idx * 5), { maxWidth: colWidth });
+    
+    doc.autoTable({
+        startY: yPos,
+        head: [['TIPO', 'PREVENCIÓN', 'LEGALES', 'ECONÓMICO']],
+        body: datosAnalisis,
+        theme: 'grid',
+        headStyles: { 
+            fillColor: colorPrimario,
+            fontSize: 11,
+            fontStyle: 'bold',
+            halign: 'center'
+        },
+        styles: { 
+            fontSize: 9,
+            cellPadding: 5,
+            lineColor: [200, 200, 200],
+            lineWidth: 0.1
+        },
+        columnStyles: {
+            0: { 
+                cellWidth: 30, 
+                fontStyle: 'bold',
+                fillColor: [240, 240, 240],
+                halign: 'center',
+                valign: 'middle'
+            },
+            1: { cellWidth: 50 },
+            2: { cellWidth: 50 },
+            3: { cellWidth: 50 }
+        },
+        bodyStyles: {
+            valign: 'top'
+        }
     });
     
-    // COLUMNA 2: LEGALES
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...colorSecundario);
-    doc.text('LEGALES', col2X, yPos - 7);
-    
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(0, 0, 0);
-    const textoLegal = [
-        'Cumplimiento normativo: 100%',
-        'Certificaciones vigentes: SI',
-        'Auditorias aprobadas: 4/4',
-        'Sanciones: Ninguna'
-    ];
-    textoLegal.forEach((linea, idx) => {
-        doc.text(linea, col2X, yPos + (idx * 5), { maxWidth: colWidth });
-    });
-    
-    // COLUMNA 3: ECONÓMICO
-    doc.setFontSize(12);
-    doc.setFont(undefined, 'bold');
-    doc.setTextColor(...colorSecundario);
-    doc.text('ECONOMICO', col3X, yPos - 7);
-    
-    doc.setFontSize(9);
-    doc.setFont(undefined, 'normal');
-    doc.setTextColor(0, 0, 0);
-    const textoEconomico = [
-        'Ahorro por prevencion: $125K',
-        'Costo de incidentes: $8K',
-        'ROI preventivo: 1,500%',
-        'Inversion en EPP: $15K'
-    ];
-    textoEconomico.forEach((linea, idx) => {
-        doc.text(linea, col3X, yPos + (idx * 5), { maxWidth: colWidth });
-    });
-    
-    // LÍNEAS DIVISORIAS VERTICALES entre columnas
-    const lineStartY = yPos - 10;
-    const lineEndY = yPos + 15;
-    
-    doc.setDrawColor(...colorTexto);
-    doc.setLineWidth(0.3);
-    
-    // Línea entre Prevención y Legales
-    doc.line(col2X - 5, lineStartY, col2X - 5, lineEndY);
-    
-    // Línea entre Legales y Económico
-    doc.line(col3X - 5, lineStartY, col3X - 5, lineEndY);
+    yPos = doc.lastAutoTable.finalY + 10;
     
     // ========== PIE DE PÁGINA ==========
-    yPos += 30;
     doc.setFontSize(8);
     doc.setTextColor(...colorTexto);
     doc.setFont(undefined, 'italic');
@@ -211,8 +271,7 @@ function generarReportePDF() {
         { align: 'center' }
     );
     
-    // ========== GUARDAR PDF ==
+    // ========== GUARDAR PDF ==========
     const nombreArchivo = `Reporte_Seguridad_${new Date().getTime()}.pdf`;
     doc.save(nombreArchivo);
 }
-
