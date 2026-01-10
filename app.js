@@ -24,8 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         'estadisticas': 'Estadísticas',
         'factores-riesgo': 'Factores de Riesgo',
         'historial': 'Historial de Predicciones',
-        'prevencion': 'Lista de Prevención',
-        'reportes': 'Reportes'
+        'prevencion': 'Lista de Prevención'
     };
     
     navItems.forEach(item => {
@@ -119,22 +118,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Botones de generar reportes
-    const reportButtons = document.querySelectorAll('.btn-primary');
-    reportButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const reportTitle = this.parentElement.querySelector('h4').textContent;
-            
-            this.textContent = 'Generando...';
+    // Botón generar reporte mensual
+    const btnGenerarReporte = document.getElementById('btnGenerarReporte');
+    if (btnGenerarReporte) {
+        btnGenerarReporte.addEventListener('click', function() {
+            this.textContent = '⏳ Generando...';
             this.disabled = true;
             
             setTimeout(() => {
-                alert(`📄 Reporte "${reportTitle}" generado exitosamente!\n\n(En producción, aquí se descargaría el PDF)`);
-                this.textContent = 'Generar PDF';
+                alert('📄 Reporte Mensual de Seguridad generado exitosamente!\n\n✅ Incluye:\n• Indicadores de Frecuencia y Severidad\n• Proyectos en riesgo\n• Factores críticos detectados\n• Recomendaciones preventivas\n\n(En producción, aquí se descargaría el PDF)');
+                this.textContent = '📄 Generar Reporte Mensual';
                 this.disabled = false;
-            }, 1000);
+            }, 1500);
         });
-    });
+    }
     
     // Botón agregar medida de prevención
     const btnAdd = document.querySelector('.btn-add');
